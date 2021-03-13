@@ -1,0 +1,85 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31019.194
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{556AEFA5-8845-4285-B355-F8BB3F3A11EE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{3E419990-8804-44AA-8787-AB4630802AF8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "microservices", "microservices", "{C018CA05-9E04-462F-A325-FAE2D5F74634}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "user", "user", "{EFC0840B-343F-481D-BBA0-6C042349500D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "identityAuth", "identityAuth", "{7918254C-0640-41B9-BCE0-3F9258C0680C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "authDemo", "authDemo", "{5E70F8A2-AF32-4FD8-8CDE-A278C5289333}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.Users", "src\microservices\user\eShopLearning.User\eShopLearning.Users.csproj", "{667679A6-B036-4652-A75E-97344B1F0F76}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{7D2E53BE-5761-47DB-943E-F351DAE8A819}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearing.UsersTesting", "src\microservices\user\test\eShopLearing.UsersTesting\eShopLearing.UsersTesting.csproj", "{E695A4D0-73E3-4A3E-92DC-F2E308012042}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.IdentityAuth", "src\microservices\identityAuth\eShopLearning.IdentityAuth\eShopLearning.IdentityAuth.csproj", "{3A0B76B5-9375-4AB8-8506-13E8AA5EF869}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "authDemo", "authDemo", "{3BE3014B-30D1-425D-8328-FFE733FF1568}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientDemo", "src\microservices\identityAuth\authDemo\ClientDemo\ClientDemo.csproj", "{BCBA8330-F340-4F57-8783-7C1C261C9A92}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiDemo", "src\microservices\identityAuth\authDemo\ApiDemo\ApiDemo.csproj", "{80A1BBC8-D933-46A1-B387-5CB513006771}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGatewayDemo", "src\microservices\identityAuth\authDemo\ApiGatewayDemo\ApiGatewayDemo.csproj", "{D45B44ED-CDB0-49B5-BF93-8D6497C45DD4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{667679A6-B036-4652-A75E-97344B1F0F76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{667679A6-B036-4652-A75E-97344B1F0F76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{667679A6-B036-4652-A75E-97344B1F0F76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{667679A6-B036-4652-A75E-97344B1F0F76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E695A4D0-73E3-4A3E-92DC-F2E308012042}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E695A4D0-73E3-4A3E-92DC-F2E308012042}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E695A4D0-73E3-4A3E-92DC-F2E308012042}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E695A4D0-73E3-4A3E-92DC-F2E308012042}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A0B76B5-9375-4AB8-8506-13E8AA5EF869}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A0B76B5-9375-4AB8-8506-13E8AA5EF869}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A0B76B5-9375-4AB8-8506-13E8AA5EF869}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A0B76B5-9375-4AB8-8506-13E8AA5EF869}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCBA8330-F340-4F57-8783-7C1C261C9A92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCBA8330-F340-4F57-8783-7C1C261C9A92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCBA8330-F340-4F57-8783-7C1C261C9A92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCBA8330-F340-4F57-8783-7C1C261C9A92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80A1BBC8-D933-46A1-B387-5CB513006771}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80A1BBC8-D933-46A1-B387-5CB513006771}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80A1BBC8-D933-46A1-B387-5CB513006771}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80A1BBC8-D933-46A1-B387-5CB513006771}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D45B44ED-CDB0-49B5-BF93-8D6497C45DD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D45B44ED-CDB0-49B5-BF93-8D6497C45DD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D45B44ED-CDB0-49B5-BF93-8D6497C45DD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D45B44ED-CDB0-49B5-BF93-8D6497C45DD4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C018CA05-9E04-462F-A325-FAE2D5F74634} = {556AEFA5-8845-4285-B355-F8BB3F3A11EE}
+		{EFC0840B-343F-481D-BBA0-6C042349500D} = {C018CA05-9E04-462F-A325-FAE2D5F74634}
+		{7918254C-0640-41B9-BCE0-3F9258C0680C} = {C018CA05-9E04-462F-A325-FAE2D5F74634}
+		{5E70F8A2-AF32-4FD8-8CDE-A278C5289333} = {556AEFA5-8845-4285-B355-F8BB3F3A11EE}
+		{667679A6-B036-4652-A75E-97344B1F0F76} = {EFC0840B-343F-481D-BBA0-6C042349500D}
+		{7D2E53BE-5761-47DB-943E-F351DAE8A819} = {EFC0840B-343F-481D-BBA0-6C042349500D}
+		{E695A4D0-73E3-4A3E-92DC-F2E308012042} = {7D2E53BE-5761-47DB-943E-F351DAE8A819}
+		{3A0B76B5-9375-4AB8-8506-13E8AA5EF869} = {7918254C-0640-41B9-BCE0-3F9258C0680C}
+		{3BE3014B-30D1-425D-8328-FFE733FF1568} = {7918254C-0640-41B9-BCE0-3F9258C0680C}
+		{BCBA8330-F340-4F57-8783-7C1C261C9A92} = {3BE3014B-30D1-425D-8328-FFE733FF1568}
+		{80A1BBC8-D933-46A1-B387-5CB513006771} = {3BE3014B-30D1-425D-8328-FFE733FF1568}
+		{D45B44ED-CDB0-49B5-BF93-8D6497C45DD4} = {3BE3014B-30D1-425D-8328-FFE733FF1568}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D3249233-9B00-40A3-8B8E-4566F8A13CBD}
+	EndGlobalSection
+EndGlobal
