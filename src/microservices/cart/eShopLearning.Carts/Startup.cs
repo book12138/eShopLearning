@@ -1,25 +1,28 @@
-using eShopLearning.IdentityAuth.Certificate;
+using eShopLearning.Carts.Aop;
+using eShopLearning.Carts.ApplicationServices;
+using eShopLearning.Carts.ApplicationServices.Impl;
+using eShopLearning.Carts.AutoMapper;
+using eShopLearning.Carts.EFCoreRepositories.EFCore;
+using eShopLearning.Carts.EFCoreRepositories.Repositories;
+using eShopLearning.Carts.EFCoreRepositories.Repositories.Impl;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
-namespace eShopLearning.IdentityAuth
+namespace eShopLearning.Carts
 {
     public class Startup
     {
@@ -37,7 +40,13 @@ namespace eShopLearning.IdentityAuth
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews()
+            services.AddControllers(o =>
+            {
+                o.Filters.Add(typeof(GlobalActionFilter));
+
+                if (!Env.IsDevelopment())
+                    o.Filters.Add(typeof(GlobalExceptionFilter));
+            })
             #region newtonsoft
                 .AddNewtonsoftJson(options =>
                 {
@@ -47,36 +56,25 @@ namespace eShopLearning.IdentityAuth
                     //修改时间的序列化方式
                     options.SerializerSettings.Converters.Add(new IsoDateTimeConverter() { DateTimeFormat = "yyyy/MM/dd HH:mm:ss" });
                 }
-            );
+                        );
             #endregion
 
-            #region identity server 4
-            services.AddIdentityServer(x =>
+            #region swagger
+            services.AddSwaggerGen(c =>
             {
-                x.IssuerUri = "null";
-                x.Authentication.CookieLifetime = TimeSpan.FromHours(2);               
-            })
-            .AddSigningCredential(IdentityCertificateLoader.Get())
-            .AddConfigurationStore(options =>
-            {
-                options.ConfigureDbContext = builder => builder.UseMySql(Configuration["MysqlConnStr"],
-                ServerVersion.AutoDetect(Configuration["MysqlConnStr"]),
-                mySqlOptionsAction: options =>
-                {
-                    options.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
-                    options.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
-                });
-            })
-            .AddOperationalStore(options =>
-            {
-                options.ConfigureDbContext = builder => builder.UseMySql(Configuration["MysqlConnStr"],
-                ServerVersion.AutoDetect(Configuration["MysqlConnStr"]),
-                mySqlOptionsAction: options =>
-                {
-                    options.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
-                    options.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
-                });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "eShopLearning Cart Microservice", Version = "v1" });
             });
+            #endregion
+
+            #region ef core
+            services.AddDbContext<eShopCartDbContext>(options =>
+                     options.UseMySql(Configuration["MysqlConnStr"],
+                     ServerVersion.AutoDetect(Configuration["MysqlConnStr"]),
+                     mySqlOptionsAction: options =>
+                     {
+                         options.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
+                         options.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
+                     }));
             #endregion
 
             #region health check
@@ -86,6 +84,11 @@ namespace eShopLearning.IdentityAuth
                             name: "eShopLearning.UserService-check",
                             tags: new string[] { "eShopLearning.UserService" });
             #endregion
+
+            services.AddAutoMapper(typeof(CustomProfile)); // automapper
+            services.AddScoped<ICartService, CartService>();
+            services.AddScoped<ICartRepository, CartRepository>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -94,45 +97,19 @@ namespace eShopLearning.IdentityAuth
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "eShopLearning.Carts v1"));
             }
 
-            var pathBase = Configuration["PATH_BASE"];
-            if (!string.IsNullOrEmpty(pathBase))
-            {
-                Log.Debug("Using PATH BASE '{pathBase}'", pathBase);
-                app.UsePathBase(pathBase);
-            }
-
-            app.UseStaticFiles();
-
-            // 使工作身份服务器重定向在边缘和最新版本的浏览器。警告:在生产环境中无效。
-            app.Use(async (context, next) =>
-            {
-                context.Response.Headers.Add("Content-Security-Policy", "script-src 'unsafe-inline'");
-                await next();
-            });
-
-            app.UseForwardedHeaders();
-
-            app.UseIdentityServer();
-
-            app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax });            
+            app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
-                /* 健康检查 */
                 endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
                 {
                     Predicate = _ => true,
