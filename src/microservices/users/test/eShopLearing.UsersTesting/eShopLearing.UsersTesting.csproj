@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\eShopLearning.User\eShopLearning.Users.csproj" />
+    <ProjectReference Include="..\..\eShopLearning.Users\eShopLearning.Users.csproj" />
   </ItemGroup>
 
 </Project>
