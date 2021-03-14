@@ -1,6 +1,7 @@
 using eShopLearning.Carts;
 using eShopLearning.Carts.EFCoreRepositories.EFCore;
 using eShopLearning.Carts.Infrastructure.Extension;
+using eShopLearning.Users.EFCoreRepositories.EFCore;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -50,8 +51,14 @@ IWebHost BuildWebHost(IConfiguration configuration, string[] args) =>
 
 var host = BuildWebHost(configuration, args);
 
-//#region ef core 迁移
-//host.MigrateDbContext<eShopCartDbContext>((context, services) => context.Database.Migrate());
-//#endregion
+#region ef core 迁移
+host.MigrateDbContext<eShopCartDbContext>((context, services) => {
+    var env = services.GetService(typeof(IWebHostEnvironment)) as IWebHostEnvironment;
+    var logger = services.GetService(typeof(ILogger<eShopCartDbContextSeed>)) as ILogger<eShopCartDbContextSeed>;
+
+    new eShopCartDbContextSeed(configuration)
+        .SeedDataMigrationAsync(context, env, logger).Wait(); // 必须要用wait() ，走异步的话，dbcontext对象会被提前释放掉
+});
+#endregion
 
 host.Run(); // 启动应用
