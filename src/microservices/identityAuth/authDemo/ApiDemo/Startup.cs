@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,30 @@ namespace ApiDemo
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApiDemo", Version = "v1" });
             });
+
+            var identityUrl = Configuration.GetValue<string>("IdentityAuthServerUrl");
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    // 指定要接入的授权服务器地址
+                    options.Authority = identityUrl;
+                    // 在验证token时，不验证Audience
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false
+                    };
+                    // 不适用Https
+                    options.RequireHttpsMetadata = false;
+                });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("orderScope", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", "demoapi");
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,8 +72,8 @@ namespace ApiDemo
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseAuthorization();
+            app.UseAuthentication(); // 认证
+            app.UseAuthorization(); // 授权
 
             app.UseEndpoints(endpoints =>
             {

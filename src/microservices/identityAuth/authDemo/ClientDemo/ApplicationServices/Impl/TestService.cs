@@ -30,5 +30,18 @@ namespace ClientDemo.ApplicationServices.Impl
             _logger.LogInformation($"请求完毕，响应码为 {(int)response.StatusCode}, 返回内容为：{responseContent}");
             return responseContent;
         }
+
+        /// <summary>
+        /// 请求api service
+        /// </summary>
+        /// <returns></returns>
+        public async Task<string> TestApiService()
+        {
+            _logger.LogInformation("准备开始请求");
+            var response = await _httpClient.GetAsync(_configuration["ApiGatewayUrl"] + "/api/Test/TestRequestApiService");
+            var responseContent = await response.Content.ReadAsStringAsync();
+            _logger.LogInformation($"请求完毕，响应码为 {(int)response.StatusCode}, 返回内容为：{responseContent}");
+            return responseContent;
+        }
     }
 }

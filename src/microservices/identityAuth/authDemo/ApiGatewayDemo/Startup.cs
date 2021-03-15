@@ -1,12 +1,17 @@
+using ApiGatewayDemo.ApplicationServices;
+using ApiGatewayDemo.ApplicationServices.Impl;
+using ApiGatewayDemo.Infrastructure.HttpMessageHandler;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
@@ -35,22 +40,34 @@ namespace ApiGatewayDemo
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApiGatewayDemo", Version = "v1" });
             });
 
-            // prevent from mapping "sub" claim to nameidentifier.
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("sub");
-
             var identityUrl = Configuration.GetValue<string>("IdentityAuthServerUrl");
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    // 指定要接入的授权服务器地址
+                    options.Authority = identityUrl;
+                    // 在验证token时，不验证Audience
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false
+                    };
+                    // 不适用Https
+                    options.RequireHttpsMetadata = false;
+                });
 
-            })
-            .AddJwtBearer(options =>
+            services.AddAuthorization(options =>
             {
-                options.Authority = identityUrl;
-                options.RequireHttpsMetadata = false;
-                options.Audience = "apigatewaydemo";                
+                options.AddPolicy("orderScope", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", "demoapigateway");
+                });
             });
+
+            services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
+            services.AddHttpClient<IApiTestService, ApiTestService>()
+              .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

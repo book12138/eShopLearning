@@ -64,18 +64,18 @@ namespace ClientDemo
             //register delegating handlers
             services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
             services.AddTransient<HttpClientRequestIdDelegatingHandler>();
-            services.AddTransient<DevspacesMessageHandler>();
+            //services.AddTransient<DevspacesMessageHandler>();
 
             //set 5 min as the lifetime for each HttpMessageHandler int the pool
             services.AddHttpClient("extendedhandlerlifetime")
-                .SetHandlerLifetime(TimeSpan.FromMinutes(5))
-                .AddHttpMessageHandler<DevspacesMessageHandler>(); ;
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5));
+            //.AddHttpMessageHandler<DevspacesMessageHandler>(); ;
 
             //add http client services
             services.AddHttpClient<ITestService, TestService>()
               .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
-              .AddHttpMessageHandler<HttpClientRequestIdDelegatingHandler>()
-              .AddHttpMessageHandler<DevspacesMessageHandler>();
+              .AddHttpMessageHandler<HttpClientRequestIdDelegatingHandler>();
+              //.AddHttpMessageHandler<DevspacesMessageHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

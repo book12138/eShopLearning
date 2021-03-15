@@ -44,6 +44,17 @@ namespace ClientDemo.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 尝试请求api demo
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        public async Task<IActionResult> TestApiService()
+        {
+            ViewData["data"] = await _testService.TestApiService();
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

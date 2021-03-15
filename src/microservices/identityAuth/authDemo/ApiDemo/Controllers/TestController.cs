@@ -15,6 +15,6 @@ namespace ApiDemo.Controllers
         [Authorize]
         [HttpGet("GetValue")]
         public string GetValue()
-            => "今天天气很好 " + DateTime.Now;
+            => "今天天气很好 " + DateTime.Now + ",收到这条文字信息时，说明已成功请求通api";
     }
 }

@@ -12,5 +12,10 @@ namespace ClientDemo.ApplicationServices
         /// </summary>
         /// <returns></returns>
         Task<string> TestApiGatewayService();
+        /// <summary>
+        /// 请求api service
+        /// </summary>
+        /// <returns></returns>
+        Task<string> TestApiService();
     }
 }
