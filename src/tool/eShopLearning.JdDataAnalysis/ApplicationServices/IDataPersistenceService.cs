@@ -13,7 +13,8 @@ namespace eShopLearning.JdDataAnalysis.ApplicationServices
         /// 批量保存抓取到的 SKU 数据
         /// </summary>
         /// <param name="jdSkuDtos"></param>
+        /// <param name="category"></param>
         /// <returns></returns>
-        Task<bool> BatchSaveSkuData(IEnumerable<JdSkuDto> jdSkuDtos);
+        Task<bool> BatchSaveSkuData(IEnumerable<JdSkuDto> jdSkuDtos, string category);
     }
 }

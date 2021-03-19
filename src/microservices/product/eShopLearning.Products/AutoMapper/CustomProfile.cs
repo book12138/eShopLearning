@@ -15,17 +15,14 @@ namespace eShopLearning.Products.AutoMapper
         /// </summary>
         public CustomProfile()
         {
-            //CreateMap<AddSkuRequest, EFCoreRepositories.Entities.Sku>()
-            //    .ForMember(dest => dest.SpuId, opt => opt.MapFrom(src => (long)src.SpuId));
-            //CreateMap<AddSpuRequest, Spu>();
-
-            //CreateMap<SkuDto, EFCoreRepositories.Entities.Sku>()
-            //    .ForMember(dest => dest.RotatePictures, opt => opt.MapFrom(src => string.Join(',', src.RotatePictures)))
-            //    .ForMember(dest => dest.DetailContent, opt => opt.MapFrom(src => string.Join(',', src.DetailContent)));
-            //CreateMap<SkuAttrDto, SkuAttr>();
-            //CreateMap<SkuDto, EsSkuDto>()
-            //    .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.RotatePictures.FirstOrDefault() ?? ""));
-            CreateMap<Category, UserInfoDto>();
+            CreateMap<SkuDto, Sku>()
+                .ForMember(dest => dest.RotatePictures, opt => opt.MapFrom(src => string.Join(',', src.RotatePictures)))
+                .ForMember(dest => dest.DetailContent, opt => opt.MapFrom(src => string.Join(',', src.DetailContent)));
+            CreateMap<SkuAttrDto, SkuAttr>();
+            CreateMap<Sku, EsSkuDto>()
+                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => SplitStrAsComma(src.RotatePictures).FirstOrDefault() ?? ""))
+                .ForMember(dest => dest.SkuId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.SpuId, opt => opt.MapFrom(src => long.Parse(src.SpuId)));
         }
 
         /// <summary>
@@ -35,7 +32,7 @@ namespace eShopLearning.Products.AutoMapper
         /// <returns></returns>
         public static string[] SplitStrAsComma(string target)
         {
-            return target.Trim().Trim(',').Split(',');
+            return target?.Trim().Trim(',').Split(',') ?? new string[0];
         }
     }
 }

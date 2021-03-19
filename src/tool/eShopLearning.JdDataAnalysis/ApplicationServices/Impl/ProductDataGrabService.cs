@@ -50,10 +50,11 @@ namespace eShopLearning.JdDataAnalysis.ApplicationServices.Impl
         /// 从搜索页面下手开始抓取
         /// </summary>        
         /// <param name="keyword">关键字</param>
+        /// <param name="category">类别id，保存数据使用</param>
         /// <param name="maxPageCount">最大爬取多少页</param>
         /// <param name="firstPage">起始页数，从第几页开始爬</param>
         /// <returns></returns>
-        public async Task GrabDataFromSearchPage(string keyword, int maxPageCount, int firstPage = 1)
+        public async Task GrabDataFromSearchPage(string keyword, string category, int maxPageCount, int firstPage = 1)
         {
             List<JdSkuDto> jdSkuDtos = new List<JdSkuDto>(); // 最终爬取来的数据会填充进去
 
@@ -98,7 +99,7 @@ namespace eShopLearning.JdDataAnalysis.ApplicationServices.Impl
                     if (adjoinSkuIds == null) // 下一步，存储数据
                     {
                         _logger.LogInformation($"-----------------SKU ID {item} 爬取完毕-----------------");
-                        if (await _dataPersistenceService.BatchSaveSkuData(jdSkuDtos))
+                        if (await _dataPersistenceService.BatchSaveSkuData(jdSkuDtos, category))
                             _logger.LogInformation("SKU数据全部保存成功");
                         else
                             _logger.LogError("SKU 数据在保存过程中出现错误导致失败");
@@ -116,7 +117,7 @@ namespace eShopLearning.JdDataAnalysis.ApplicationServices.Impl
 
                     // 存储查找出来的数据
                     _logger.LogInformation($"-----------------SKU ID {item} 爬取完毕-----------------");
-                    if (await _dataPersistenceService.BatchSaveSkuData(jdSkuDtos))
+                    if (await _dataPersistenceService.BatchSaveSkuData(jdSkuDtos, category))
                         _logger.LogInformation("SKU数据全部保存成功");
                     else
                         _logger.LogError("SKU 数据在保存过程中出现错误导致失败");

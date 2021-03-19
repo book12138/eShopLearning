@@ -1,16 +1,23 @@
 using eShopLearning.Products;
+using eShopLearning.Products.ApplicationServices;
+using eShopLearning.Products.Dto;
 using eShopLearning.Products.EFCoreRepositories.EFCore;
 using eShopLearning.Products.Infrastructure.Extension;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 string _namespace = typeof(Startup).Namespace;
@@ -61,3 +68,30 @@ host.MigrateDbContext<eShopProductDbContext>((context, services) =>
 #endregion
 
 host.Run(); // 启动应用
+
+#region 消费 rabbitmq 队列中的消息 (无法实现)
+//var serviceScope = host.Services.CreateScope(); // host.Services 是主线程的，子线程里直接拿来用会报错
+//var rabbitmqConnFactory = host.Services.GetService(typeof(IConnectionFactory)) as IConnectionFactory;
+//using (var conn = rabbitmqConnFactory.CreateConnection())
+//{
+//    using (IModel channel = conn.CreateModel())
+//    {
+//        channel.QueueDeclare(queue: "new_sku", durable: true, exclusive: false, autoDelete: false, arguments: null);
+//        channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+//        var consumer = new EventingBasicConsumer(channel);
+
+//        var productService = serviceScope.ServiceProvider.GetService(typeof(IProductService)) as IProductService;
+//        consumer.Received += (model, args) => // 定义消息消费 handle
+//        {
+//            var body = args.Body.ToArray();
+//            var message = Encoding.UTF8.GetString(body);
+//            Log.Logger.Information("准备消费一条新SKU添加消息");
+//            var result = productService.AddProduct(JsonConvert.DeserializeObject<AddProductDto>(message)).Result;
+//            channel.BasicAck(deliveryTag: args.DeliveryTag, multiple: false); // 确认该消息已经消费完成
+//            Log.Logger.Information("一条新SKU添加消息消费完毕");
+//        };
+
+//        channel.BasicConsume(queue: "new_sku", autoAck: false, consumer: consumer);
+//    }
+//}
+#endregion

@@ -114,7 +114,7 @@ namespace eShopLearning.Products.EFCoreRepositories.EFCore
         /// <returns></returns>
         private IEnumerable<Category> GetCategoryFromFile(string contentRootPath, ILogger logger)
         {
-            string csvFile = Path.Combine(contentRootPath, "EFCoreRepositories", "EFCore", "productcategoryseeddata.csv"); // 迁移文件路径
+            string csvFile = Path.Combine(contentRootPath, "EFCoreRepositories", "EFCore", "spucategoryseeddata.csv"); // 迁移文件路径
 
             if (!File.Exists(csvFile))
                 return new List<Category>();
@@ -122,7 +122,7 @@ namespace eShopLearning.Products.EFCoreRepositories.EFCore
             string[] csvheaders;
             try
             {
-                string[] requiredHeaders = { "ParentId", "Name", "Image", "Order" };
+                string[] requiredHeaders = { "id","parentid", "name", "image", "order" };
                 csvheaders = GetHeaders(requiredHeaders, csvFile);
             }
             catch (Exception ex)
@@ -156,10 +156,11 @@ namespace eShopLearning.Products.EFCoreRepositories.EFCore
 
             var category = new Category
             {
-                ParentId = column[Array.IndexOf(headers, "ParentId")].Trim('"').Trim(),
-                Name = column[Array.IndexOf(headers, "Name")].Trim('"').Trim(),
-                Image = column[Array.IndexOf(headers, "Image")].Trim('"').Trim(),
-                Order = int.TryParse(column[Array.IndexOf(headers, "Order")].Trim('"').Trim(), out int orderParseResult) ? orderParseResult : 0
+                Id = column[Array.IndexOf(headers, "id")].Trim('"').Trim(),
+                ParentId = column[Array.IndexOf(headers, "parentid")].Trim('"').Trim(),
+                Name = column[Array.IndexOf(headers, "name")].Trim('"').Trim(),
+                Image = column[Array.IndexOf(headers, "image")].Trim('"').Trim(),
+                Order = int.TryParse(column[Array.IndexOf(headers, "order")].Trim('"').Trim(), out int orderParseResult) ? orderParseResult : 0
             };
 
             return category;
@@ -183,7 +184,7 @@ namespace eShopLearning.Products.EFCoreRepositories.EFCore
             string[] csvheaders;
             try
             {
-                string[] requiredHeaders = { "Parentid", "Name", "Image", "Order" };
+                string[] requiredHeaders = { "id", "category" };
                 csvheaders = GetHeaders(requiredHeaders, csvFile);
             }
             catch (Exception ex)
@@ -217,8 +218,8 @@ namespace eShopLearning.Products.EFCoreRepositories.EFCore
 
             var spu = new Spu
             {
-                Category = column[Array.IndexOf(headers, "Category")].Trim('"').Trim(),
-                Id = column[Array.IndexOf(headers, "Id")].Trim('"').Trim()
+                Category = column[Array.IndexOf(headers, "category")].Trim('"').Trim(),
+                Id = column[Array.IndexOf(headers, "id")].Trim('"').Trim()
             };
 
             return spu;
@@ -242,7 +243,7 @@ namespace eShopLearning.Products.EFCoreRepositories.EFCore
             string[] csvheaders;
             try
             {
-                string[] requiredHeaders = { "DetailContent", "Inventory", "Price", "OriginalPrice", "RotatePictures", "SpuId", "Title", "Id" };
+                string[] requiredHeaders = { "id", "title", "spuid", "rotatepictures", "originalprice", "price", "inventory", "detailcontent"  };
                 csvheaders = GetHeaders(requiredHeaders, csvFile);
             }
             catch (Exception ex)
@@ -276,16 +277,16 @@ namespace eShopLearning.Products.EFCoreRepositories.EFCore
 
             var sku = new Sku
             {
-                DetailContent = column[Array.IndexOf(headers, "DetailContent")]?.Trim('"')?.Trim(),
-                Inventory = int.TryParse(column[Array.IndexOf(headers, "Inventory")]?.Trim('"')?.Trim(), out int inventoryParseResult) ? inventoryParseResult : 0,
-                Price = decimal.TryParse(column[Array.IndexOf(headers, "Price")]?.Trim('"')?.Trim(), out decimal priceParseResult) ? priceParseResult : 0,
-                OriginalPrice = string.IsNullOrEmpty(column[Array.IndexOf(headers, "OriginalPrice")]?.Trim('"')?.Trim()) ?
+                DetailContent = column[Array.IndexOf(headers, "detailcontent")]?.Trim('"')?.Trim(),
+                Inventory = int.TryParse(column[Array.IndexOf(headers, "inventory")]?.Trim('"')?.Trim(), out int inventoryParseResult) ? inventoryParseResult : 0,
+                Price = decimal.TryParse(column[Array.IndexOf(headers, "price")]?.Trim('"')?.Trim(), out decimal priceParseResult) ? priceParseResult : 0,
+                OriginalPrice = string.IsNullOrEmpty(column[Array.IndexOf(headers, "originalprice")]?.Trim('"')?.Trim()) ?
                     null :
-                    decimal.TryParse(column[Array.IndexOf(headers, "OriginalPrice")]?.Trim('"')?.Trim(), out decimal originalPriceParseResult) ? originalPriceParseResult : 0,
-                RotatePictures = column[Array.IndexOf(headers, "RotatePictures")]?.Trim('"')?.Trim(),
-                SpuId = column[Array.IndexOf(headers, "SpuId")]?.Trim('"')?.Trim(),
-                Title = column[Array.IndexOf(headers, "Title")]?.Trim('"')?.Trim(),
-                Id = column[Array.IndexOf(headers, "Id")]?.Trim('"')?.Trim()
+                    decimal.TryParse(column[Array.IndexOf(headers, "originalprice")]?.Trim('"')?.Trim(), out decimal originalPriceParseResult) ? originalPriceParseResult : 0,
+                RotatePictures = column[Array.IndexOf(headers, "rotatepictures")]?.Trim('"')?.Trim(),
+                SpuId = column[Array.IndexOf(headers, "spuid")]?.Trim('"')?.Trim(),
+                Title = column[Array.IndexOf(headers, "title")]?.Trim('"')?.Trim(),
+                Id = column[Array.IndexOf(headers, "id")]?.Trim('"')?.Trim()
             };
 
             return sku;
@@ -301,7 +302,7 @@ namespace eShopLearning.Products.EFCoreRepositories.EFCore
         /// <returns></returns>
         private IEnumerable<SkuAttr> GetSkuAttrFromFile(string contentRootPath, ILogger logger)
         {
-            string csvFile = Path.Combine(contentRootPath, "EFCoreRepositories", "EFCore", "skuseeddata.csv"); // 迁移文件路径
+            string csvFile = Path.Combine(contentRootPath, "EFCoreRepositories", "EFCore", "skuattrseeddata.csv"); // 迁移文件路径
 
             if (!File.Exists(csvFile))
                 return new List<SkuAttr>();
@@ -309,7 +310,7 @@ namespace eShopLearning.Products.EFCoreRepositories.EFCore
             string[] csvheaders;
             try
             {
-                string[] requiredHeaders = { "Name", "SkuId", "Image", "Type", "Id" };
+                string[] requiredHeaders = { "id","name", "skuid", "image", "type" };
                 csvheaders = GetHeaders(requiredHeaders, csvFile);
             }
             catch (Exception ex)
@@ -343,11 +344,11 @@ namespace eShopLearning.Products.EFCoreRepositories.EFCore
 
             var skuAttr = new SkuAttr
             {
-                Name = column[Array.IndexOf(headers, "Name")]?.Trim('"')?.Trim(),
-                SkuId = column[Array.IndexOf(headers, "SkuId")]?.Trim('"')?.Trim(),
-                Image = column[Array.IndexOf(headers, "Image")]?.Trim('"')?.Trim(),
-                Type = column[Array.IndexOf(headers, "Type")]?.Trim('"')?.Trim(),
-                Id = column[Array.IndexOf(headers, "Id")]?.Trim('"')?.Trim()
+                Name = column[Array.IndexOf(headers, "name")]?.Trim('"')?.Trim(),
+                SkuId = column[Array.IndexOf(headers, "skuid")]?.Trim('"')?.Trim(),
+                Image = column[Array.IndexOf(headers, "image")]?.Trim('"')?.Trim(),
+                Type = column[Array.IndexOf(headers, "type")]?.Trim('"')?.Trim(),
+                Id = column[Array.IndexOf(headers, "id")]?.Trim('"')?.Trim()
             };
 
             return skuAttr;

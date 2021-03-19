@@ -1,4 +1,6 @@
 using eShopLearning.Products.Aop;
+using eShopLearning.Products.ApplicationServices;
+using eShopLearning.Products.ApplicationServices.Impl;
 using eShopLearning.Products.AutoMapper;
 using eShopLearning.Products.EFCoreRepositories.EFCore;
 using eShopLearning.Users.EFCoreRepositories.Repositories;
@@ -16,8 +18,10 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Nest;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using RabbitMQ.Client;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -88,12 +92,37 @@ namespace eShopLearning.Products
                             tags: new string[] { "eShopLearning.UserService" });
             #endregion
 
+            #region elasticsearch
+
+            services.AddSingleton<IElasticClient>(options =>
+            new ElasticClient(
+                new ConnectionSettings(
+                    new Uri(Configuration["Elasticsearch"])
+                    )
+                )
+            );
+
+            #endregion
+
+            #region rabbitmq
+            services.AddSingleton<IConnectionFactory>(u => new ConnectionFactory()
+            {
+                HostName = Configuration["RabbitMQ:HostName"],
+                UserName = Configuration["RabbitMQ:UserName"],
+                Password = Configuration["RabbitMQ:Password"],
+                Port = int.TryParse(Configuration["RabbitMQ:Port"], out int parseResult) ? parseResult : 5672
+            });
+            #endregion
+
             services.AddAutoMapper(typeof(CustomProfile)); // automapper
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ISkuRepository, SkuRepository>();
             services.AddScoped<ISpuRepository, SpuRepository>();
             services.AddScoped<ISkuAttrRepository, SkuAttrRepository>();
+
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ISkuEsService, SkuEsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

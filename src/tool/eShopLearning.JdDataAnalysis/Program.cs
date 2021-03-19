@@ -5,6 +5,7 @@ using eShopLearning.JdDataAnalysis.ApplicationServices.Impl;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
 using System;
 using System.IO;
 
@@ -23,15 +24,17 @@ IServiceProvider ConfigureServices()
     services.AddTransient<IConfiguration>(u => {
         var builder = new ConfigurationBuilder()
         .SetBasePath(Directory.GetCurrentDirectory())
-        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true); // 设置配置文件路径
+        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true) // 设置配置文件路径
+        .AddUserSecrets("bcdeadae-9673-4223-b42a-0d54bf981cc7");
 
         return builder.Build();
     });
+    var configuration = services.BuildServiceProvider().GetService<IConfiguration>();
 
     // log
     services.AddLogging(build =>
     {
-        build.AddConfiguration(services.BuildServiceProvider().GetService<IConfiguration>().GetSection("Logging"));
+        build.AddConfiguration(configuration.GetSection("Logging"));
         build.AddConsole();
     });
 
@@ -40,7 +43,16 @@ IServiceProvider ConfigureServices()
 
     services.AddTransient<IProductDataGrabService, ProductDataGrabService>();
     services.AddTransient<IDataPersistenceService, DataPersistenceService>();
+    //services.AddTransient<IDataPersistenceService, SkuDataPublishToRabbitMQ>();
     services.AddTransient<IProxyIpService, ProxyIpService>();
+
+    // rabbitmq
+    services.AddTransient<IConnectionFactory>(u => new ConnectionFactory() { 
+        HostName = configuration["RabbitMQ:HostName"], 
+        UserName = configuration["RabbitMQ:UserName"],
+        Password = configuration["RabbitMQ:Password"],
+        Port = int.TryParse(configuration["RabbitMQ:Port"], out int parseResult) ? parseResult : 5672
+    });
 
     return services.BuildServiceProvider();
 }
@@ -49,10 +61,10 @@ IServiceProvider ConfigureServices()
 var _serviceProvider = ConfigureServices();
 var _productDataGrabService = _serviceProvider.GetService(typeof(IProductDataGrabService)) as IProductDataGrabService;
 Console.ForegroundColor = ConsoleColor.Cyan;
+Console.WriteLine("嗨，爬虫出发 " + DateTime.Now);
 
-// _productDataGrabService.GrabDataFromSearchPage("女衣", 2);
-
-Console.WriteLine("嗨，现在时间为：" + DateTime.Now);
+//await _productDataGrabService.GrabDataFromSearchPage("短袖T恤 男", "6778073159441805314", 1);
+await _productDataGrabService.GrabDataFromSearchPage("白衬衫 女", "6778073159441805319", 1);
 
 Console.WriteLine("按下任意键继续......");
 Console.ReadKey();

@@ -19,7 +19,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace eShopLearing.UsersTesting
+namespace eShopLearning.UsersTesting
 {
     public class UserServiceTest
     {
