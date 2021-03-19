@@ -1,6 +1,6 @@
 using eShopLearning.Carts;
 using eShopLearning.Carts.EFCoreRepositories.EFCore;
-using eShopLearning.Carts.Infrastructure.Extension;
+using eShopLearning.Common.Extension;
 using eShopLearning.Users.EFCoreRepositories.EFCore;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;

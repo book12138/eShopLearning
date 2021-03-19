@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 
-namespace eShopLearning.Users.Infrastructure.Helper
+namespace eShopLearning.Common.Helper
 {
     /// <summary>
     /// 雪花id生成

@@ -3,7 +3,7 @@ using eShopLearning.Carts.Dto;
 using eShopLearning.Carts.EFCoreRepositories.EFCore;
 using eShopLearning.Carts.EFCoreRepositories.Entities;
 using eShopLearning.Carts.EFCoreRepositories.Repositories;
-using eShopLearning.Carts.Infrastructure;
+using eShopLearning.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

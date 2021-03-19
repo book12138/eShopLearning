@@ -1,7 +1,7 @@
 ﻿using eShopLearning.Products.ApplicationServices;
 using eShopLearning.Products.ApplicationServices.Impl;
 using eShopLearning.Products.Dto;
-using eShopLearning.Products.Infrastructure;
+using eShopLearning.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -10,6 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using eShopLearning.Products.Domain.Bus;
+using eShopLearning.Products.Domain.Commands;
+using MediatR;
 
 namespace eShopLearning.Products.Controllers
 {
@@ -30,9 +33,13 @@ namespace eShopLearning.Products.Controllers
         /// </summary>
         private readonly ISkuEsService _skuEsService;
         /// <summary>
-        /// 注入
+        /// 总线
         /// </summary>
-        private readonly ILogger _logger;
+        private readonly IApplicationBus _applicationBus;
+        /// <summary>
+        /// 领域通知
+        /// </summary>
+        private readonly DomainNotificationHandler _domainNotification;
 
         /// <summary>
         /// 构造注入
@@ -40,18 +47,21 @@ namespace eShopLearning.Products.Controllers
         /// <param name="productService"></param>
         /// <param name="rabbitmqConnFactory"></param>
         /// <param name="skuEsService"></param>
-        /// <param name="logger"></param>
+        /// <param name="applicationBus"></param>
+        /// <param name="notification"></param>
         public ProductController(
             IProductService productService, 
             IConnectionFactory rabbitmqConnFactory, 
             ISkuEsService skuEsService,
-            ILogger<ProductService> logger
+            IApplicationBus applicationBus,
+            DomainNotificationHandler domainNotification
             )
         {
             _productService = productService;
             _rabbitmqConnFactory = rabbitmqConnFactory;
             _skuEsService = skuEsService;
-            _logger = logger;
+            _applicationBus = applicationBus;
+            _domainNotification = domainNotification;
         }
 
         /// <summary>
@@ -62,28 +72,35 @@ namespace eShopLearning.Products.Controllers
         [HttpPost("AddProduct")]
         public async Task<ResponseModel> AddProduct([FromBody] AddProductDto dto)
         {
-            if (!dto.Skus.Any())
-                return ResponseModel.BuildResponse(PublicStatusCode.Success);
+            //if (!dto.Skus.Any())
+            //    return ResponseModel.BuildResponse(PublicStatusCode.Success);
 
-            using (var conn = _rabbitmqConnFactory.CreateConnection())
-            {
-                using (IModel channel = conn.CreateModel())
-                {
-                    channel.QueueDeclare(queue: "new_sku", durable: true, exclusive: false, autoDelete: false, arguments: null);
-                    var properties = channel.CreateBasicProperties();
-                    properties.Persistent = true;
+            //using (var conn = _rabbitmqConnFactory.CreateConnection())
+            //{
+            //    using (IModel channel = conn.CreateModel())
+            //    {
+            //        channel.QueueDeclare(queue: "new_sku", durable: true, exclusive: false, autoDelete: false, arguments: null);
+            //        var properties = channel.CreateBasicProperties();
+            //        properties.Persistent = true;
 
-                    var body = JsonConvert.SerializeObject(dto);
-                    channel.BasicPublish(exchange: "",
-                                 routingKey: "new_sku",
-                                 mandatory: true,
-                                 basicProperties: properties,
-                                 body: Encoding.UTF8.GetBytes(body));
-                    return ResponseModel.BuildResponse(PublicStatusCode.Success);
-                }
-            }
+            //        var body = JsonConvert.SerializeObject(dto);
+            //        channel.BasicPublish(exchange: "",
+            //                     routingKey: "new_sku",
+            //                     mandatory: true,
+            //                     basicProperties: properties,
+            //                     body: Encoding.UTF8.GetBytes(body));
+            //        return ResponseModel.BuildResponse(PublicStatusCode.Success);
+            //    }
+            //}
 
             // await _productService.AddProduct(dto);
+
+            await _applicationBus.SendCommand(new AddProductCommand(dto.Category, dto.Skus));
+            if (this._domainNotification.HasNotifications())
+                return ResponseModel.BuildResponse(PublicStatusCode.Fail, 
+                    string.Join(';', _domainNotification.GetNotifications().Select(u => u.Value)));
+
+            return ResponseModel.BuildResponse(PublicStatusCode.Success);
         }
 
         /// <summary>

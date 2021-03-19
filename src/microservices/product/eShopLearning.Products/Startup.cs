@@ -2,21 +2,24 @@ using eShopLearning.Products.Aop;
 using eShopLearning.Products.ApplicationServices;
 using eShopLearning.Products.ApplicationServices.Impl;
 using eShopLearning.Products.AutoMapper;
+using eShopLearning.Products.Domain.Bus;
+using eShopLearning.Products.Domain.Commands;
+using eShopLearning.Products.Domain.Commands.Handlers;
+using eShopLearning.Products.Domain.Events;
+using eShopLearning.Products.Domain.Events.Handlers;
 using eShopLearning.Products.EFCoreRepositories.EFCore;
 using eShopLearning.Users.EFCoreRepositories.Repositories;
 using eShopLearning.Users.EFCoreRepositories.Repositories.Impl;
 using HealthChecks.UI.Client;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Nest;
 using Newtonsoft.Json.Converters;
@@ -24,10 +27,7 @@ using Newtonsoft.Json.Serialization;
 using RabbitMQ.Client;
 using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace eShopLearning.Products
 {
@@ -112,6 +112,14 @@ namespace eShopLearning.Products
                 Password = Configuration["RabbitMQ:Password"],
                 Port = int.TryParse(Configuration["RabbitMQ:Port"], out int parseResult) ? parseResult : 5672
             });
+            #endregion
+
+            #region domain            
+            services.AddMediatR(typeof(Startup)); // MediatR
+            services.AddScoped<IApplicationBus, ApplicationBus>(); // bus            
+            services.AddScoped<IRequestHandler<AddProductCommand, Unit>, ProductCommandHandler>(); // 领域命令         
+            services.AddScoped<INotificationHandler<DomainNotification>, DomainNotificationHandler>(); // 领域通知
+            services.AddScoped<INotificationHandler<AddProductEvent>, ProductEventHandler>(); // 领域事件
             #endregion
 
             services.AddAutoMapper(typeof(CustomProfile)); // automapper

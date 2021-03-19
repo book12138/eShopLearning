@@ -1,5 +1,5 @@
 ﻿using eShopLearning.Carts.Dto;
-using eShopLearning.Carts.Infrastructure;
+using eShopLearning.Common;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;

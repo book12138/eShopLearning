@@ -1,8 +1,5 @@
 ﻿using eShopLearning.Users.Dto;
-using eShopLearning.Users.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using eShopLearning.Common;
 using System.Threading.Tasks;
 
 namespace eShopLearning.Users.ApplicationServices

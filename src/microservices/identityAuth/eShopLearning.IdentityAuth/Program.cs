@@ -1,6 +1,6 @@
 using eShopLearning.IdentityAuth;
 using eShopLearning.IdentityAuth.EFCoreConfig;
-using eShopLearning.IdentityAuth.Interstructure.Extension;
+using eShopLearning.Common.Extension;
 using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;

@@ -2,8 +2,8 @@
 using eShopLearning.Products.Dto;
 using eShopLearning.Products.EFCoreRepositories.EFCore;
 using eShopLearning.Products.EFCoreRepositories.Entities;
-using eShopLearning.Products.Infrastructure;
-using eShopLearning.Products.Infrastructure.Helper;
+using eShopLearning.Common;
+using eShopLearning.Common.Helper;
 using eShopLearning.Users.EFCoreRepositories.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Nest;
@@ -70,22 +70,26 @@ namespace eShopLearning.Products.ApplicationServices.Impl
         /// <summary>
         /// 添加商品
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="category"></param>
+        /// <param name="skuDtos"></param>
         /// <returns></returns>
-        public async Task<ResponseModel> AddProduct(AddProductDto dto)
+        public async Task<(bool isSuccess, string errorMag, IEnumerable<Sku> skus)> AddProduct(string category, IEnumerable<SkuDto> skuDtos)
         {
-            if (dto.Skus == null || dto.Skus.Count() == 0)
-                return new ResponseModel { Code = 10001, Msg = "没有实际的SKU数据" };
+            if (string.IsNullOrEmpty(category))
+                return (false, "类别id不可为空", null);
 
-            foreach (var item in dto.Skus.Select(u => u.Title))
+            if (skuDtos == null || !skuDtos.Any())
+                return (false, "没有实际的SKU数据", null);
+
+            foreach (var item in skuDtos.Select(u => u.Title))
                 if (await _eShopProductDbContext.Skus.AnyAsync(u => u.Title.Trim() == item))
-                    return new ResponseModel { Code = 10002, Msg = "该商品已经有过记录" };
+                    return (false, "该商品已经有过记录", null);
 
             var spuId = SnowFlakeAlg.GetGuid().ToString(); //_snowflakeIdGenerate.NextId().ToString();
 
-            await _spuRepository.AddAsync(new Spu { Category = dto.Category, Id = spuId });
+            await _spuRepository.AddAsync(new Spu { Category = category, Id = spuId });
             List<Sku> skuModels = new List<Sku>();
-            foreach (var item in dto.Skus)
+            foreach (var item in skuDtos)
             {
                 var skuId = SnowFlakeAlg.GetGuid().ToString();
                 var skuModel = _mapper.Map<Sku>(item);
@@ -104,54 +108,7 @@ namespace eShopLearning.Products.ApplicationServices.Impl
 
             await _eShopProductDbContext.SaveChangesAsync();
 
-            await _skuEsService.SaveSkuData(skuModels);
-
-            return ResponseModel.BuildResponse(PublicStatusCode.Success);
-            /*using (var transaction = await _eShopProductDbContext.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    if (dto.Skus == null || dto.Skus.Count() == 0)
-                        return new ResponseModel { Code = 10001, Msg = "没有实际的SKU数据" };
-
-                    foreach (var item in dto.Skus.Select(u => u.Title))
-                        if (await _eShopProductDbContext.Skus.AnyAsync(u => u.Title.Trim() == item))
-                            return new ResponseModel { Code = 10002, Msg = "该商品已经有过记录" };
-
-                    var spuId = SnowFlakeAlg.GetGuid().ToString(); //_snowflakeIdGenerate.NextId().ToString();
-
-                    await _spuRepository.AddAsync(new Spu { Category = dto.Category, Id = spuId });
-                    List<Sku> skuModels = new List<Sku>();
-                    foreach (var item in dto.Skus)
-                    {
-                        var skuId = SnowFlakeAlg.GetGuid().ToString();
-                        var skuModel = _mapper.Map<Sku>(item);
-                        skuModel.Id = skuId;
-                        skuModel.SpuId = spuId;
-                        skuModels.Add(skuModel);
-                        
-                        var skuAttrModels = _mapper.Map<IEnumerable<SkuAttr>>(item.SkuAttrs).Select(u => {
-                            u.SkuId = skuId;
-                            u.Id = SnowFlakeAlg.GetGuid().ToString();
-                            return u;
-                        });
-                        await _skuAttrRepository.BatchAddAsync(skuAttrModels);
-                    }
-                    await _skuRepository.BatchAddAsync(skuModels);
-
-                    await _eShopProductDbContext.SaveChangesAsync();
-                    await transaction.CommitAsync();
-
-                    await _skuEsService.SaveSkuData(skuModels);
-                   
-                    return ResponseModel.BuildResponse(PublicStatusCode.Success);
-                }
-                catch
-                {
-                    await transaction.RollbackAsync();
-                    throw;
-                }
-            }*/
+            return (true, null, skuModels);
         }
     }
 }

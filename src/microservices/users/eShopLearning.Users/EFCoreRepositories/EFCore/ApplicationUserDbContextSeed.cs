@@ -1,6 +1,6 @@
 ﻿using eShopLearning.Users.ApplicationServices;
 using eShopLearning.Users.EFCoreRepositories.Entities;
-using eShopLearning.Users.Infrastructure.Extension;
+using eShopLearning.Common.Extension;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

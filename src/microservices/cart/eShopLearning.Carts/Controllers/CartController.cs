@@ -1,6 +1,6 @@
 ﻿using eShopLearning.Carts.ApplicationServices;
 using eShopLearning.Carts.Dto;
-using eShopLearning.Carts.Infrastructure;
+using eShopLearning.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

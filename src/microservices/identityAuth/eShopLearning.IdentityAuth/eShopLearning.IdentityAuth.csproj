@@ -40,4 +40,8 @@
     <PackageReference Include="Serilog.Sinks.Http" Version="7.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\tool\eShopLearning.Common\eShopLearning.Common.csproj" />
+  </ItemGroup>
+
 </Project>

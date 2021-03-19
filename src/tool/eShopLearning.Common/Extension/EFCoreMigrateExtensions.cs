@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace eShopLearning.Users.Infrastructure.Extension
+namespace eShopLearning.Common.Extension
 {
     public static class EFCoreMigrateExtensions
     {
@@ -21,7 +21,7 @@ namespace eShopLearning.Users.Infrastructure.Extension
         public static bool IsInKubernetes(this IWebHost webHost)
         {            
             var config = webHost.Services.GetService(typeof(IConfiguration)) as IConfiguration;
-            var orchestratorType = config.GetValue<string>("OrchestratorType"); // 获取协调器类型配置
+            var orchestratorType = config["OrchestratorType"]; // 获取协调器类型配置
             return orchestratorType?.ToUpper() == "K8S";
         }
 

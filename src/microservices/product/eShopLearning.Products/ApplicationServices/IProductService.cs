@@ -1,6 +1,6 @@
 ﻿using eShopLearning.Products.Dto;
 using eShopLearning.Products.EFCoreRepositories.Entities;
-using eShopLearning.Products.Infrastructure;
+using eShopLearning.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +13,9 @@ namespace eShopLearning.Products.ApplicationServices
         /// <summary>
         /// 添加商品
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="category"></param>
+        /// <param name="skuDtos"></param>
         /// <returns></returns>
-        Task<ResponseModel> AddProduct(AddProductDto dto);
+        Task<(bool isSuccess, string errorMag, IEnumerable<Sku> skus)> AddProduct(string category, IEnumerable<SkuDto> skuDtos);
     }
 }

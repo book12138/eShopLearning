@@ -1,24 +1,13 @@
 using eShopLearning.Products;
-using eShopLearning.Products.ApplicationServices;
-using eShopLearning.Products.Dto;
 using eShopLearning.Products.EFCoreRepositories.EFCore;
-using eShopLearning.Products.Infrastructure.Extension;
+using eShopLearning.Common.Extension;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 using Serilog;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 string _namespace = typeof(Startup).Namespace;
 string _appName = _namespace.Substring(_namespace.LastIndexOf('.', _namespace.LastIndexOf('.') - 1) + 1);

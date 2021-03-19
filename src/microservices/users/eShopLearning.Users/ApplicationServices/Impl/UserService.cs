@@ -3,12 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using eShopLearning.Users.EFCoreRepositories.EFCore;
 using eShopLearning.Users.EFCoreRepositories.Entities;
 using eShopLearning.Users.EFCoreRepositories.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using eShopLearning.Users.Infrastructure;
 using eShopLearning.Users.Dto;
+using eShopLearning.Common;
 
 namespace eShopLearning.Users.ApplicationServices.Impl
 {

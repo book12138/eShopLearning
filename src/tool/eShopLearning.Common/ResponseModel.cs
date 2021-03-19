@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
-namespace eShopLearning.Products.Infrastructure
+namespace eShopLearning.Common
 {
     /// <summary>
     /// 接口返回报文统一包装（不带数据返回）
@@ -22,13 +22,24 @@ namespace eShopLearning.Products.Infrastructure
         /// <summary>
         /// 按照状态枚举创建回返报文
         /// </summary>
-        /// <param name="en"></param>
+        /// <param name="statusCode"></param>
         /// <returns></returns>
-        public static ResponseModel BuildResponse(PublicStatusCode en)
+        public static ResponseModel BuildResponse(PublicStatusCode statusCode)
             => new ResponseModel
             {
-                Code = (int)en,
-                Msg = en.GetType().GetCustomAttribute<DisplayAttribute>()?.Name ?? ""
+                Code = (int)statusCode,
+                Msg = statusCode.GetType().GetCustomAttribute<DisplayAttribute>()?.Name ?? ""
+            };
+        /// <summary>
+        /// 按照状态枚举创建回返报文
+        /// </summary>
+        /// <param name="statusCode"></param>
+        /// <returns></returns>
+        public static ResponseModel BuildResponse(PublicStatusCode statusCode, string msg)
+            => new ResponseModel
+            {
+                Code = (int)statusCode,
+                Msg = msg
             };
 
         /// <summary>
