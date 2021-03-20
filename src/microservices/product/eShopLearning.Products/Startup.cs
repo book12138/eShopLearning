@@ -71,7 +71,7 @@ namespace eShopLearning.Products
             #region swagger
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "eShopLearning User Microservice", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "eShopLearning Product Microservice", Version = "v1" });
             });
             #endregion
 
