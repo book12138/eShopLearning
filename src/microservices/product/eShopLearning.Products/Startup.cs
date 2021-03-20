@@ -124,13 +124,17 @@ namespace eShopLearning.Products
 
             services.AddAutoMapper(typeof(CustomProfile)); // automapper
 
+            #region application repositories
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ISkuRepository, SkuRepository>();
             services.AddScoped<ISpuRepository, SpuRepository>();
             services.AddScoped<ISkuAttrRepository, SkuAttrRepository>();
+            #endregion
 
+            #region application services 
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ISkuEsService, SkuEsService>();
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -54,14 +54,14 @@ namespace eShopLearning.Products.Controllers
             IConnectionFactory rabbitmqConnFactory, 
             ISkuEsService skuEsService,
             IApplicationBus applicationBus,
-            DomainNotificationHandler domainNotification
+            INotificationHandler<DomainNotification> domainNotification
             )
         {
             _productService = productService;
             _rabbitmqConnFactory = rabbitmqConnFactory;
             _skuEsService = skuEsService;
             _applicationBus = applicationBus;
-            _domainNotification = domainNotification;
+            _domainNotification = domainNotification as DomainNotificationHandler;
         }
 
         /// <summary>

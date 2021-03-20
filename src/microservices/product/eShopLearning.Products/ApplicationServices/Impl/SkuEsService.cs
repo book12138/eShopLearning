@@ -3,6 +3,7 @@ using eShopLearning.Products.Dto;
 using eShopLearning.Products.EFCoreRepositories.EFCore;
 using eShopLearning.Products.EFCoreRepositories.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Nest;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,14 @@ namespace eShopLearning.Products.ApplicationServices.Impl
         /// automapper
         /// </summary>
         private readonly IMapper _mapper;
+        /// <summary>
+        /// ef core
+        /// </summary>
         private readonly eShopProductDbContext _eShopProductDbContext;
+        /// <summary>
+        /// 日志
+        /// </summary>
+        private readonly ILogger _logger;
 
         /// <summary>
         /// 构造注入
@@ -28,11 +36,18 @@ namespace eShopLearning.Products.ApplicationServices.Impl
         /// <param name="elasticClient"></param>
         /// <param name="mapper"></param>
         /// <param name="eShopProductDbContext"></param>
-        public SkuEsService(IElasticClient elasticClient, IMapper mapper, eShopProductDbContext @eShopProductDbContext)
+        /// <param name="logger"></param>
+        public SkuEsService(
+            IElasticClient elasticClient, 
+            IMapper mapper, 
+            eShopProductDbContext @eShopProductDbContext,
+            ILogger<SkuEsService> logger
+            )
         {
             _elasticClient = elasticClient;
             _mapper = mapper;
             _eShopProductDbContext = eShopProductDbContext;
+            _logger = logger;
         }
 
         /// <summary>
@@ -42,10 +57,15 @@ namespace eShopLearning.Products.ApplicationServices.Impl
         /// <returns></returns>
         public virtual async Task SaveSkuData(IEnumerable<Sku> skus)
         {
+            if(skus is null || skus.Any() is false)
+            {
+                _logger.LogWarning("本来打算存储到es的sku数据被检查为null或empty，导致无法进行下一步保存计划");
+                return;
+            }    
             foreach (var item in skus)
             {
                 var esSkuDto = _mapper.Map<EsSkuDto>(item);
-                await _elasticClient.IndexAsync(esSkuDto, u => u.Index("eshopjdproduct").Id(esSkuDto.SkuId));
+                await _elasticClient.IndexAsync(esSkuDto, u => u.Index("eshopjdskudata").Id(esSkuDto.SkuId));
             }
         }
 

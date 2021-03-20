@@ -55,8 +55,12 @@ namespace eShopLearning.Products.Domain.Commands.Handlers
         {
             (bool isSuccess, string errorMsg, IEnumerable<Sku> skus) = await this._productService.AddProduct(request.Category, request.SkuDtos);
 
-            if(!isSuccess)
+            if (isSuccess is not true)
+            {
                 await base._bus.RaiseEvent(new DomainNotification("", errorMsg));
+                return await Task.FromResult(new Unit());
+            }
+
 
             await base._bus.RaiseEvent(new AddProductEvent(skus));
 

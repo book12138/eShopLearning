@@ -25,7 +25,7 @@ namespace eShopLearning.Products.Domain.Events.Handlers
         /// </summary>
         /// <param name="skuEsService"></param>
         /// <param name="logger"></param>
-        public ProductEventHandler(ISkuEsService skuEsService, Logger<ProductEventHandler> logger)
+        public ProductEventHandler(ISkuEsService skuEsService, ILogger<ProductEventHandler> logger)
         {
             this._skuEsService = skuEsService;
             this._logger = logger;
@@ -41,6 +41,7 @@ namespace eShopLearning.Products.Domain.Events.Handlers
         {
             _logger.LogInformation("将新产品数据存储到es中");
             await _skuEsService.SaveSkuData(notification.Skus);
+            await Task.CompletedTask;
         }
     }
 }
