@@ -14,6 +14,12 @@ namespace eShopLearning.Products.ApplicationServices
         /// <returns></returns>
         Task SaveSkuData(IEnumerable<Sku> skus);
         /// <summary>
+        /// 将sku数据保存至es
+        /// </summary>
+        /// <param name="sku"></param>
+        /// <returns></returns>
+        Task SaveSkuData(Sku sku);
+        /// <summary>
         /// 搜索 SKU 
         /// </summary>
         /// <param name="keyword">关键字</param>
@@ -21,6 +27,10 @@ namespace eShopLearning.Products.ApplicationServices
         /// <param name="size"></param>
         /// <returns></returns>
         Task<IEnumerable<EsSkuDto>> Search(string keyword, int page, int size);
+        /// <summary>
+        /// 将数据库中的所有sku 数据存储到es中
+        /// </summary>
+        /// <returns></returns>
         Task SaveAllSkuDataToEsFromDb();
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using System.IO;
+using eShopLearning.Products.ApplicationServices;
 
 string _namespace = typeof(Startup).Namespace;
 string _appName = _namespace.Substring(_namespace.LastIndexOf('.', _namespace.LastIndexOf('.') - 1) + 1);
@@ -50,8 +51,9 @@ host.MigrateDbContext<eShopProductDbContext>((context, services) =>
 {
     var env = services.GetService(typeof(IWebHostEnvironment)) as IWebHostEnvironment;
     var logger = services.GetService(typeof(ILogger<eShopProductDbContextSeed>)) as ILogger<eShopProductDbContextSeed>;
+    var skuEsService = services.GetService(typeof(ISkuEsService)) as ISkuEsService;
 
-    new eShopProductDbContextSeed(configuration)
+    new eShopProductDbContextSeed(configuration, skuEsService)
         .SeedDataMigrationAsync(context, env, logger).Wait(); // 必须要用wait() ，走异步的话，dbcontext对象会被提前释放掉
 });
 #endregion

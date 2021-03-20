@@ -70,6 +70,23 @@ namespace eShopLearning.Products.ApplicationServices.Impl
         }
 
         /// <summary>
+        /// 将sku数据保存至es
+        /// </summary>
+        /// <param name="sku"></param>
+        /// <returns></returns>
+        public virtual async Task SaveSkuData(Sku sku)
+        {
+            if (sku is null || sku.Id is null or "")
+            {
+                _logger.LogWarning("本来打算存储到es的sku数据被检查为null或empty，导致无法进行下一步保存计划");
+                return;
+            }
+
+            var esSkuDto = _mapper.Map<EsSkuDto>(sku);
+            await _elasticClient.IndexAsync(esSkuDto, u => u.Index("eshopjdskudata").Id(esSkuDto.SkuId));
+        }
+
+        /// <summary>
         /// 搜索
         /// </summary>
         /// <param name="keyword">关键字</param>
@@ -92,12 +109,15 @@ namespace eShopLearning.Products.ApplicationServices.Impl
             return searchResponse.Documents.ToList();
         }
 
+        /// <summary>
+        /// 将数据库中的所有sku 数据存储到es中
+        /// </summary>
+        /// <returns></returns>
         public async Task SaveAllSkuDataToEsFromDb()
         {
             if (!await _eShopProductDbContext.Skus.AnyAsync())
                 return;
              
-            return;
             foreach (var item in _eShopProductDbContext.Skus)
             {
                 var esSkuDto = _mapper.Map<EsSkuDto>(item);
