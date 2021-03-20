@@ -8,6 +8,8 @@ using eShopLearning.Products.Domain.Commands.Handlers;
 using eShopLearning.Products.Domain.Events;
 using eShopLearning.Products.Domain.Events.Handlers;
 using eShopLearning.Products.EFCoreRepositories.EFCore;
+using eShopLearning.Products.gRPC;
+using eShopLearning.Products.gRPC.Protos;
 using eShopLearning.Users.EFCoreRepositories.Repositories;
 using eShopLearning.Users.EFCoreRepositories.Repositories.Impl;
 using HealthChecks.UI.Client;
@@ -123,6 +125,7 @@ namespace eShopLearning.Products
             #endregion
 
             services.AddAutoMapper(typeof(CustomProfile)); // automapper
+            services.AddGrpc(); // gRPC
 
             #region application repositories
             services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -156,6 +159,7 @@ namespace eShopLearning.Products
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                /* health check */
                 endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
                 {
                     Predicate = _ => true,
@@ -165,7 +169,9 @@ namespace eShopLearning.Products
                 {
                     Predicate = r => r.Name.Contains("self")
                 });
+                /* gRPC */
+                endpoints.MapGrpcService<SkuInfoGrpcService>();
             });
-        }
+        } 
     }
 }

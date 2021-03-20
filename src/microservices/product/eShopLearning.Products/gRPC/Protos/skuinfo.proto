@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+option csharp_namespace = "eShopLearning.Products.gRPC.Protos";
+
+service SkuInfoGrpc{
+	rpc GetSkuInfoAsId(GetSkuInfoAsIdRequest) returns (GetSkuInfoAsIdReply);
+	rpc Search(SearchRequest) returns (stream SearchReply);
+}
+
+message GetSkuInfoAsIdRequest{
+	string skuId = 1;
+}
+
+message GetSkuInfoAsIdReply{
+	string title = 1;
+	string rotatePictures = 2;
+	string detailContent = 3;
+	float price = 4;
+	int32 inventory = 5;
+	SkuAttrInfo skuAttrInfo = 6;	
+}
+
+message SkuInfo{
+	string title = 1;
+	string rotatePictures = 2;
+	string detailContent = 3;
+	float price = 4;
+	int32 inventory = 5;
+}
+
+message SkuAttrInfo{
+	string type = 1;
+	string name = 2;
+	string image = 3;
+}
+
+message SearchRequest{
+	string keyword = 1;
+	int32 page = 2;
+	int32 size = 3;
+}
+
+message SearchReply{
+	repeated SkuInfo skuinfo = 1;
+}

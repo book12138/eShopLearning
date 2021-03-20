@@ -9,6 +9,7 @@
     <None Remove="EFCoreRepositories\EFCore\skuattrseeddata.csv" />
     <None Remove="EFCoreRepositories\EFCore\skuseeddata.csv" />
     <None Remove="EFCoreRepositories\EFCore\spuseeddata.csv" />
+    <None Remove="gRPC\Protos\skuinfo.proto" />
   </ItemGroup>
   
   <ItemGroup>
@@ -24,6 +25,12 @@
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="5.0.1" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.36.0" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.36.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.36.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.3" />
@@ -49,6 +56,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\tool\eShopLearning.Common\eShopLearning.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="gRPC\Protos\skuinfo.proto" />
   </ItemGroup>
 
 </Project>
