@@ -1,3 +1,4 @@
+using Consul;
 using eShopLearning.Products.Aop;
 using eShopLearning.Products.ApplicationServices;
 using eShopLearning.Products.ApplicationServices.Impl;
@@ -143,6 +144,37 @@ namespace eShopLearning.Products
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // 服务注册
+            var consulClient = new ConsulClient(u => u.Address = new Uri(Configuration["ConsulAddress"]));
+            consulClient.Agent.ServiceRegister(new AgentServiceRegistration()
+            {
+                ID = Guid.NewGuid().ToString(),
+                Name = "microservice_product",// 服务名
+                Address = "localhost", // 服务绑定IP
+                Port = 7648, // 服务绑定端口
+                Check = new AgentServiceCheck()
+                {
+                    DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(5),//服务启动多久后注册
+                    Interval = TimeSpan.FromSeconds(10),//健康检查时间间隔
+                    HTTP = $"http://localhost:7648/api/Health/Check",//健康检查地址
+                    Timeout = TimeSpan.FromSeconds(5)
+                }
+            }).Wait();
+            consulClient.Agent.ServiceRegister(new AgentServiceRegistration()
+            {
+                ID = Guid.NewGuid().ToString(),
+                Name = "microservice_product_gRPC",// 服务名
+                Address = "localhost", // 服务绑定IP
+                Port = 8685, // 服务绑定端口
+                Check = new AgentServiceCheck()
+                {
+                    DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(5),//服务启动多久后注册
+                    Interval = TimeSpan.FromSeconds(10),//健康检查时间间隔
+                    HTTP = $"http://localhost:8685/Check",//健康检查地址
+                    Timeout = TimeSpan.FromSeconds(5)
+                }
+            }).Wait();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -170,7 +202,8 @@ namespace eShopLearning.Products
                     Predicate = r => r.Name.Contains("self")
                 });
                 /* gRPC */
-                endpoints.MapGrpcService<SkuInfoGrpcService>();                
+                endpoints.MapGrpcService<SkuInfoGrpcService>();
+                endpoints.MapGrpcService<HealthCheckGrpcService>();
             });
         } 
     }

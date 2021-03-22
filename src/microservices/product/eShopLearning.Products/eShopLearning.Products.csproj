@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>ea9965f7-7b36-439b-8424-f2d865ed7799</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..\..\..</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,7 +27,9 @@
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="5.0.1" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="Consul" Version="1.6.1.1" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.36.0" />
+    <PackageReference Include="Grpc.HealthCheck" Version="2.36.4" />
     <PackageReference Include="Grpc.Net.Client" Version="2.36.0" />
     <PackageReference Include="Grpc.Tools" Version="2.36.1">
       <PrivateAssets>all</PrivateAssets>
