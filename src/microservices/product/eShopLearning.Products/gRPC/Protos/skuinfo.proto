@@ -20,13 +20,13 @@ message GetSkuInfoAsIdReply{
 	SkuAttrInfo skuAttrInfo = 6;	
 }
 
-message SkuInfo{
+/*message SkuBasicsInfo{
 	string title = 1;
 	string rotatePictures = 2;
 	string detailContent = 3;
 	float price = 4;
 	int32 inventory = 5;
-}
+}*/
 
 message SkuAttrInfo{
 	string type = 1;
@@ -41,5 +41,8 @@ message SearchRequest{
 }
 
 message SearchReply{
-	repeated SkuInfo skuinfo = 1;
+	string skuId =1;
+	string image = 2;
+	string title = 3;
+	float price = 4;
 }

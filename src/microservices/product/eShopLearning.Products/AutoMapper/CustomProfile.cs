@@ -24,7 +24,8 @@ namespace eShopLearning.Products.AutoMapper
                 .ForMember(dest => dest.Image, opt => opt.MapFrom(src => SplitStrAsComma(src.RotatePictures).FirstOrDefault() ?? ""))
                 .ForMember(dest => dest.SkuId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.SpuId, opt => opt.MapFrom(src => long.Parse(src.SpuId)));
-            CreateMap<SearchReply, EsSkuDto>();
+            CreateMap<EsSkuDto, SearchReply>()
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => float.Parse(src.Price.ToString())));
         }
 
         /// <summary>

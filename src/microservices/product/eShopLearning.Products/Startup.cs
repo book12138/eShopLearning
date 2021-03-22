@@ -137,7 +137,7 @@ namespace eShopLearning.Products
             #region application services 
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ISkuEsService, SkuEsService>();
-            #endregion
+            #endregion            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -170,7 +170,7 @@ namespace eShopLearning.Products
                     Predicate = r => r.Name.Contains("self")
                 });
                 /* gRPC */
-                endpoints.MapGrpcService<SkuInfoGrpcService>();
+                endpoints.MapGrpcService<SkuInfoGrpcService>();                
             });
         } 
     }

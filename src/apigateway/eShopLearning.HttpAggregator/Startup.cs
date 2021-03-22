@@ -1,4 +1,5 @@
 using eShopLearning.HttpAggregator.Aop;
+using eShopLearning.Products.AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -58,6 +59,8 @@ namespace eShopLearning.HttpAggregator
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "eShopLearning.HttpAggregator", Version = "v1" });
             });
             #endregion
+
+            services.AddAutoMapper(typeof(CustomProfile)); // automapper
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

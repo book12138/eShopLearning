@@ -1,8 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="gRPC\Protos\skuinfo.proto" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
@@ -25,12 +29,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="gRPC\Protos\" />
+    <ProjectReference Include="..\..\tool\eShopLearning.Common\eShopLearning.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\tool\eShopLearning.Common\eShopLearning.Common.csproj" />
+    <Protobuf Include="gRPC\Protos\skuinfo.proto" />
   </ItemGroup>
 
 </Project>

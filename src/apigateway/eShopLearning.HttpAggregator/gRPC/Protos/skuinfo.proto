@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option csharp_namespace = "eShopLearning.HttpAggregator.gRPC.Protos";
+
+service SkuInfoGrpc{
+	rpc Search(SearchRequest) returns (stream SearchReply);
+}
+
+message SearchRequest{
+	string keyword = 1;
+	int32 page = 2;
+	int32 size = 3;
+}
+
+message SearchReply{
+	string skuId =1;
+	string image = 2;
+	string title = 3;
+	float price = 4;
+}

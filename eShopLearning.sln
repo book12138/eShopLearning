@@ -51,9 +51,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{188160D8-E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.ProductsTesting", "src\microservices\product\test\eShopLearning.ProductsTesting\eShopLearning.ProductsTesting.csproj", "{68950B42-DB5F-48B7-8B70-EF1B170D618C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopLearning.Common", "src\tool\eShopLearning.Common\eShopLearning.Common.csproj", "{CC7A1E57-4F37-4F16-A4C8-A9D02C4256A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.Common", "src\tool\eShopLearning.Common\eShopLearning.Common.csproj", "{CC7A1E57-4F37-4F16-A4C8-A9D02C4256A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopLearning.HttpAggregator", "src\apigateway\eShopLearning.HttpAggregator\eShopLearning.HttpAggregator.csproj", "{E86B4B82-B9EC-49DF-99A6-A495F64F56B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.HttpAggregator", "src\apigateway\eShopLearning.HttpAggregator\eShopLearning.HttpAggregator.csproj", "{E86B4B82-B9EC-49DF-99A6-A495F64F56B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
