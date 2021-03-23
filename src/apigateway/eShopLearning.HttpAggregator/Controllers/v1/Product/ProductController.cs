@@ -23,7 +23,7 @@ namespace eShopLearning.HttpAggregator.Controllers.v1.Product
         [HttpGet("search/{keyword}/{page}/{size}")]
         public async ResponseModel<IEnumerable<SearchViewModel>> Search(string keyword, int page, int size)
         {
-            return null;
+            
         }
     }
 }

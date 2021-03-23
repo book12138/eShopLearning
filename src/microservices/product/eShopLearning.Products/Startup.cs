@@ -24,6 +24,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using NConsul.AspNetCore;
 using Nest;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -123,10 +124,19 @@ namespace eShopLearning.Products
             services.AddScoped<IRequestHandler<AddProductCommand, Unit>, ProductCommandHandler>(); // 领域命令         
             services.AddScoped<INotificationHandler<DomainNotification>, DomainNotificationHandler>(); // 领域通知
             services.AddScoped<INotificationHandler<AddProductEvent>, ProductEventHandler>(); // 领域事件
-            #endregion
+            #endregion            
 
             services.AddAutoMapper(typeof(CustomProfile)); // automapper
             services.AddGrpc(); // gRPC
+
+            #region consul
+            services.AddConsul(Configuration["ConsulAddress"])
+                .AddHttpHealthCheck("http://localhost:7648/api/Health/Check", 5, 10)
+                .RegisterService("microservice_product", "localhost", 7648, new string[0]);
+            services.AddConsul(Configuration["ConsulAddress"])
+                .AddGRPCHealthCheck("localhost:8685")
+                .RegisterService("microservice_product_grpc", "localhost", 8685, new string[0]);
+            #endregion
 
             #region application repositories
             services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -144,36 +154,39 @@ namespace eShopLearning.Products
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            #region consul grpc health check(废弃代码)
             // 服务注册
-            var consulClient = new ConsulClient(u => u.Address = new Uri(Configuration["ConsulAddress"]));
-            consulClient.Agent.ServiceRegister(new AgentServiceRegistration()
-            {
-                ID = Guid.NewGuid().ToString(),
-                Name = "microservice_product",// 服务名
-                Address = "localhost", // 服务绑定IP
-                Port = 7648, // 服务绑定端口
-                Check = new AgentServiceCheck()
-                {
-                    DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(5),//服务启动多久后注册
-                    Interval = TimeSpan.FromSeconds(10),//健康检查时间间隔
-                    HTTP = $"http://localhost:7648/api/Health/Check",//健康检查地址
-                    Timeout = TimeSpan.FromSeconds(5)
-                }
-            }).Wait();
-            consulClient.Agent.ServiceRegister(new AgentServiceRegistration()
-            {
-                ID = Guid.NewGuid().ToString(),
-                Name = "microservice_product_gRPC",// 服务名
-                Address = "localhost", // 服务绑定IP
-                Port = 8685, // 服务绑定端口
-                Check = new AgentServiceCheck()
-                {
-                    DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(5),//服务启动多久后注册
-                    Interval = TimeSpan.FromSeconds(10),//健康检查时间间隔
-                    HTTP = $"http://localhost:8685/Check",//健康检查地址
-                    Timeout = TimeSpan.FromSeconds(5)
-                }
-            }).Wait();
+            //var consulClient = new ConsulClient(u => u.Address = new Uri(Configuration["ConsulAddress"]));
+            //consulClient.Agent.ServiceRegister(new AgentServiceRegistration()
+            //{
+            //    ID = Guid.NewGuid().ToString(),
+            //    Name = "microservice_product",// 服务名
+            //    Address = "localhost", // 服务绑定IP
+            //    Port = 7648, // 服务绑定端口
+            //    Check = new AgentServiceCheck()
+            //    {
+            //        DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(5),//服务启动多久后注册
+            //        Interval = TimeSpan.FromSeconds(10),//健康检查时间间隔
+            //        HTTP = $"http://localhost:7648/api/Health/Check",//健康检查地址
+            //        Timeout = TimeSpan.FromSeconds(5)
+            //    }
+            //}).Wait();
+            //consulClient.Agent.ServiceRegister(new AgentServiceRegistration()
+            //{
+            //    ID = Guid.NewGuid().ToString(),
+            //    Name = "microservice_product_gRPC",// 服务名
+            //    Address = "localhost", // 服务绑定IP
+            //    Port = 8685, // 服务绑定端口
+            //    Check = new AgentServiceCheck()
+            //    {
+
+            //        DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(5),//服务启动多久后注册
+            //        Interval = TimeSpan.FromSeconds(10),//健康检查时间间隔
+            //        HTTP = $"localhost:8685/grpc.health.v1.Health/Check",//健康检查地址
+            //        Timeout = TimeSpan.FromSeconds(5)
+            //    }
+            //}).Wait();
+            #endregion
 
             if (env.IsDevelopment())
             {
