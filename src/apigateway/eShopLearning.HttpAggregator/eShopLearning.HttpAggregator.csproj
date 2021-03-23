@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>1470e269-1717-4664-b8b9-251f584ca452</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +15,7 @@
 	  <PackageReference Include="AspNetCore.HealthChecks.UI" Version="5.0.1" />
 	  <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="5.0.1" />
 	  <PackageReference Include="AutoMapper" Version="10.1.1" />
+	  <PackageReference Include="Consul" Version="1.6.1.1" />
 	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
 	  <PackageReference Include="Grpc.AspNetCore" Version="2.36.0" />
 	  <PackageReference Include="Grpc.Net.Client" Version="2.36.0" />

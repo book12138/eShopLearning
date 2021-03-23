@@ -7,8 +7,9 @@ namespace eShopLearning.HttpAggregator.ViewModel
 {
     public class SearchViewModel
     {
-        public string SukId { get; set; }
+        public string SkuId { get; set; }
         public string Image { get; set; }
         public decimal Price { get; set; }
+        public string Title { get; set; }
     }
 }
