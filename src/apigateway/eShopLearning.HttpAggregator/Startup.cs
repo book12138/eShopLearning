@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -66,6 +67,32 @@ namespace eShopLearning.HttpAggregator
 
             services.AddAutoMapper(typeof(CustomProfile)); // automapper
 
+            #region authentication
+            var identityUrl = Configuration.GetValue<string>("IdentityAuthServerUrl");
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    // 指定要接入的授权服务器地址
+                    options.Authority = identityUrl;
+                    // 在验证token时，不验证Audience
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false
+                    };
+                    // 不使用Https
+                    options.RequireHttpsMetadata = false;
+                });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("orderScope", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", "demoapigateway");
+                });
+            });
+            #endregion
+
             #region http services
             services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
             services.AddHttpClient<ICartService, CartService>()
@@ -87,7 +114,7 @@ namespace eShopLearning.HttpAggregator
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
