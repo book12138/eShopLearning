@@ -85,10 +85,10 @@ namespace eShopLearning.HttpAggregator
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("orderScope", policy =>
+                options.AddPolicy("eshopApiScop", policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim("scope", "demoapigateway");
+                    policy.RequireClaim("scope", "eshophttpapigateway");
                 });
             });
             #endregion
