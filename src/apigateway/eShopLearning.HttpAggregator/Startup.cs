@@ -1,7 +1,11 @@
+using eShopLearning.Common.HttpServices.HttpMessageHandler;
 using eShopLearning.HttpAggregator.Aop;
+using eShopLearning.HttpAggregator.ApplicationServices;
+using eShopLearning.HttpAggregator.ApplicationServices.Impl;
 using eShopLearning.Products.AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -61,6 +65,13 @@ namespace eShopLearning.HttpAggregator
             #endregion
 
             services.AddAutoMapper(typeof(CustomProfile)); // automapper
+
+            #region http services
+            services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
+            services.AddHttpClient<ICartService, CartService>()
+              .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
