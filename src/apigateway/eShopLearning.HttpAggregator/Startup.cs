@@ -58,10 +58,39 @@ namespace eShopLearning.HttpAggregator
                 });
             #endregion
 
+            services.AddOptions();
+
             #region swagger
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "eShopLearning.HttpAggregator", Version = "v1" });
+                options.DescribeAllEnumsAsStrings();
+
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Shopping Aggregator for Uniapp Clients",
+                    Version = "v1",
+                    Description = "Shopping Aggregator for Uniapp Clients"
+                });
+
+                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.OAuth2,
+                    Flows = new OpenApiOAuthFlows()
+                    {
+                        Implicit = new OpenApiOAuthFlow()
+                        {
+                            AuthorizationUrl = new Uri($"{Configuration.GetValue<string>("IdentityAuthServerUrl")}/connect/authorize"),
+                            TokenUrl = new Uri($"{Configuration.GetValue<string>("IdentityAuthServerUrl")}/connect/token"),
+
+                            Scopes = new Dictionary<string, string>()
+                            {
+                                { "webshoppingagg", "Shopping Aggregator for Uniapp Clients" }
+                            }
+                        }
+                    }
+                });
+
+                options.OperationFilter<AuthorizeCheckOperationFilter>();
             });
             #endregion
 
@@ -104,12 +133,22 @@ namespace eShopLearning.HttpAggregator
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+            var pathBase = Configuration["PATH_BASE"];
+            if (!string.IsNullOrEmpty(pathBase))
             {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "eShopLearning.HttpAggregator v1"));
+                Log.Information("当前应用运行路径为 '{pathBase}'", pathBase);
+                app.UsePathBase(pathBase);
             }
+
+            app.UseSwagger().UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint($"{ (!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty) }/swagger/v1/swagger.json", "Purchase BFF V1");
+
+                c.OAuthClientId("webshoppingaggswaggerui");
+                c.OAuthClientSecret(string.Empty);
+                c.OAuthRealm(string.Empty);
+                c.OAuthAppName("web shopping bff Swagger UI");
+            });
 
             app.UseHttpsRedirection();
 

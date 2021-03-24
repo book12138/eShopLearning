@@ -16,7 +16,8 @@ namespace eShopLearning.IdentityAuth.EFCoreConfig
         public async Task SeedAsync(ConfigurationDbContext context, IConfiguration configuration)
         {
             var clientUrls = new Dictionary<string, string>() { 
-                { "mvcclientdemo", configuration["ClientUrls:MvcClientDemo"] } 
+                { "mvcclientdemo", configuration["ClientUrls:MvcClientDemo"] },
+                { "eshopuniapp", configuration["ClientUrls:EshopUniapp"] }
             };
 
             if (!context.Clients.Any())
