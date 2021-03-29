@@ -3,6 +3,7 @@ using eShopLearning.HttpAggregator.Aop;
 using eShopLearning.HttpAggregator.ApplicationServices;
 using eShopLearning.HttpAggregator.ApplicationServices.Impl;
 using eShopLearning.Products.AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -63,8 +64,6 @@ namespace eShopLearning.HttpAggregator
             #region swagger
             services.AddSwaggerGen(options =>
             {
-                options.DescribeAllEnumsAsStrings();
-
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Shopping Aggregator for Uniapp Clients",
@@ -77,16 +76,18 @@ namespace eShopLearning.HttpAggregator
                     Type = SecuritySchemeType.OAuth2,
                     Flows = new OpenApiOAuthFlows()
                     {
-                        Implicit = new OpenApiOAuthFlow()
-                        {
-                            AuthorizationUrl = new Uri($"{Configuration.GetValue<string>("IdentityAuthServerUrl")}/connect/authorize"),
-                            TokenUrl = new Uri($"{Configuration.GetValue<string>("IdentityAuthServerUrl")}/connect/token"),
-
-                            Scopes = new Dictionary<string, string>()
-                            {
-                                { "webshoppingagg", "Shopping Aggregator for Uniapp Clients" }
-                            }
-                        }
+                         Implicit = new OpenApiOAuthFlow()
+                         {
+                             AuthorizationUrl = new Uri($"{Configuration.GetValue<string>("IdentityAuthServerUrl")}/connect/authorize"),
+                             TokenUrl = new Uri($"{Configuration.GetValue<string>("IdentityAuthServerUrl")}/connect/token"),
+                             Scopes = new Dictionary<string, string>()
+                             {
+                                 { "eshophttpapigateway", "api gateway" },
+                                 { "productapi", "product service api" },
+                                 { "userapi", "user service api" },
+                                 { "cartapi", "cart service api" }
+                             }
+                         }
                     }
                 });
 
@@ -144,7 +145,7 @@ namespace eShopLearning.HttpAggregator
             {
                 c.SwaggerEndpoint($"{ (!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty) }/swagger/v1/swagger.json", "Purchase BFF V1");
 
-                c.OAuthClientId("webshoppingaggswaggerui");
+                c.OAuthClientId("eshophttpaggswaggerui");
                 c.OAuthClientSecret(string.Empty);
                 c.OAuthRealm(string.Empty);
                 c.OAuthAppName("web shopping bff Swagger UI");

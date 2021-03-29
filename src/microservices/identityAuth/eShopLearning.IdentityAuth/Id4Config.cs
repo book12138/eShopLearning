@@ -111,15 +111,33 @@ namespace IdentityServer4Demo
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.OfflineAccess,
-                        "demoapi",
-                        "demoapigateway" // 定义该客户端可使用的 api 资源
+                        "eshophttpapigateway",
+                        "productapi",
+                        "userapi",
+                        "cartapi"
                     },
                     AccessTokenLifetime = 60*60*2, // 2 hours
                     IdentityTokenLifetime= 60*60*2, // 2 hours
                     RefreshTokenUsage = TokenUsage.ReUse,
                     RefreshTokenExpiration = TokenExpiration.Sliding, // token 为滑动过期时间
                     RequirePkce = true
-                }
+                },
+                // eShopHttpAggregator Swagger UI
+                new Client
+                {
+                    ClientId = "eshophttpaggswaggerui",
+                    ClientName = "eShop http Aggregattor Swagger UI",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
+                    RedirectUris = { $"{clientUrls["eshophttpaggswaggerui"]}/swagger/oauth2-redirect.html" },
+                    PostLogoutRedirectUris = { $"{clientUrls["eshophttpaggswaggerui"]}/swagger/" },
+                    AllowedScopes = {
+                        "eshophttpapigateway",
+                        "productapi",
+                        "userapi",
+                        "cartapi"
+                    }
+                },
             };
         }
     }
