@@ -39,5 +39,16 @@ namespace eShopLearning.Users.Controllers
         [Authorize]
         public async Task<ResponseModel<UserInfoDto>> GetUserInfo(long id)
             => await _userService.GetUserInfo(id);
+
+        /// <summary>
+        /// 获取个人信息(仅支持token里面包含了id的)
+        /// </summary>
+        /// <returns></returns>        
+        [HttpGet("GetUserInfo")]
+        [Authorize]
+        public async Task<ResponseModel<UserInfoDto>> GetUserInfo()
+        {
+            return await _userService.GetUserInfo(1);
+        }
     }
 }
