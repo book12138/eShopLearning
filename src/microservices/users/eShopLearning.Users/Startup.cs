@@ -19,6 +19,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using NConsul.AspNetCore;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Serilog;
@@ -88,7 +89,13 @@ namespace eShopLearning.Users
                         .AddCheck("self", () => HealthCheckResult.Healthy())
                         .AddRedis(Configuration["RedisConnStr"],
                             name: "eShopLearning.UserService-check",
-                            tags: new string[] { "eShopLearning.UserService" });                       
+                            tags: new string[] { "eShopLearning.UserService" });
+            #endregion
+
+            #region consul
+            services.AddConsul(Configuration["ConsulAddress"])
+           .AddHttpHealthCheck("http://localhost:7648/api/Health/Check", 5, 10)
+           .RegisterService("microservice_users", "localhost", 1685, new string[0]);
             #endregion
 
             services.AddAutoMapper(typeof(CustomProfile)); // automapper
