@@ -20,6 +20,7 @@ namespace eShopLearning.IdentityAuth.EFCoreConfig
                 { "eshopuniapp", configuration["ClientUrls:EshopUniapp"] },
                 {"eshophttpaggswaggerui", configuration["ClientUrls:eShopHttpAggSwaggerUI"] },
                 {"userserviceswaggerui", configuration["ClientUrls:UserServiceSwaggerUI"] },
+                {"cartserviceswaggerui", configuration["ClientUrls:CartServiceSwaggerUI"] },
             };
 
             if (!context.Clients.Any())
