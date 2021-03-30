@@ -46,7 +46,7 @@ namespace eShopLearning.Common
         /// 按照状态枚举修改回返报文
         /// </summary>
         /// <param name="en"></param>
-        public void UpdateCodeAndMsg(PublicStatusCode en)
+        public virtual void UpdateCodeAndMsg(PublicStatusCode en)
         {            
             Code = (int)en;
             Msg = en.GetType().GetCustomAttribute<DisplayAttribute>()?.Name ?? "";
@@ -84,5 +84,42 @@ namespace eShopLearning.Common
         /// 返回的数据
         /// </summary>
         public T Data { get; set; }
+
+        /// <summary>
+        /// 按照状态枚举创建回返报文
+        /// </summary>
+        /// <param name="statusCode"></param>
+        /// <returns></returns>
+        public new static ResponseModel<T> BuildResponse(PublicStatusCode statusCode)
+            => new ResponseModel<T>
+            {
+                Code = (int)statusCode,
+                Msg = statusCode.GetType().GetCustomAttribute<DisplayAttribute>()?.Name ?? "",
+                Data = default(T)
+            };
+        /// <summary>
+        /// 按照状态枚举创建回返报文
+        /// </summary>
+        /// <param name="statusCode"></param>
+        /// <returns></returns>
+        public new static ResponseModel<T> BuildResponse(PublicStatusCode statusCode, string msg)
+            => new ResponseModel<T>
+            {
+                Code = (int)statusCode,
+                Msg = msg,
+                Data = default(T)
+            };
+        /// <summary>
+        /// 按照状态枚举创建回返报文
+        /// </summary>
+        /// <param name="statusCode"></param>
+        /// <returns></returns>
+        public static ResponseModel<T> BuildResponse(PublicStatusCode statusCode, T data)
+            => new ResponseModel<T>
+            {
+                Code = (int)statusCode,
+                Msg = "",
+                Data = data
+            };
     }
 }

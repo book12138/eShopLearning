@@ -100,5 +100,18 @@ namespace eShopLearning.Users.ApplicationServices.Impl
             await _applicationUserContext.SaveChangesAsync();
             return ResponseModel.BuildResponse(PublicStatusCode.Success);
         }
+
+        /// <summary>
+        /// 按照用户id获取用户信息
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<ResponseModel<UserInfoDto>> GetUserInfo(long userId)
+        {
+            var user = await _applicationUserContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+                return ResponseModel<UserInfoDto>.BuildResponse(PublicStatusCode.Fail, "");
+            else return ResponseModel<UserInfoDto>.BuildResponse(PublicStatusCode.Success, _mapper.Map<UserInfoDto>(user));
+        }
     }
 }

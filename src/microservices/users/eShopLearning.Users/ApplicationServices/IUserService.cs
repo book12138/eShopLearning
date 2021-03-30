@@ -26,6 +26,11 @@ namespace eShopLearning.Users.ApplicationServices
         /// <param name="newPassword">新密码</param>
         /// <returns></returns>
         Task<ResponseModel> UserPasswordModify(long userId, string originalPassword, string newPassword);
-
+        /// <summary>
+        /// 按照用户id获取用户信息
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<ResponseModel<UserInfoDto>> GetUserInfo(long userId);
     }
 }

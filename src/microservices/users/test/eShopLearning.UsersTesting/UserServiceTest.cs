@@ -118,5 +118,31 @@ namespace eShopLearning.UsersTesting
         }
 
         #endregion
+
+        #region 用户信息获取
+        /// <summary>
+        /// 使用已经存在的用户id测试用户信息获取
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task UseExistUserIdToGetUserInfoTest()
+        {
+            var result = await _userService.GetUserInfo(1);
+            result.Code.Should().Be(200);
+            result.Data.Username.Should().Be("shapman");
+        }
+
+        /// <summary>
+        /// 使用吧不存在的用户id去尝试获取用户信息
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task UseNonExistUserIdToGetUserInfoTest()
+        {
+            var result = await _userService.GetUserInfo(2);
+            result.Code.Should().Be(400);
+            result.Data.Should().BeNull();
+        }
+        #endregion
     }
 }

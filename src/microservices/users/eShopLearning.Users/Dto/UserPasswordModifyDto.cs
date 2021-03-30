@@ -9,6 +9,10 @@ namespace eShopLearning.Users.Dto
     public class UserPasswordModifyDto
     {
         /// <summary>
+        /// 用户唯一标识
+        /// </summary>
+        public long UserId { get; set; }
+        /// <summary>
         /// 原密码
         /// </summary>
         [Required]

@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 namespace eShopLearning.Users.Controllers
 {
     /// <summary>
-    /// 用户服务
+    /// 账户信息服务
     /// </summary>
-    [Route("v1/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
     {
@@ -22,21 +22,13 @@ namespace eShopLearning.Users.Controllers
         /// 用户应用服务
         /// </summary>
         private readonly IUserService _userService;
-        /// <summary>
-        /// 身份授权信息服务
-        /// </summary>
-        private readonly IIdentityService _identityService;
 
         /// <summary>
         /// 构造注入
         /// </summary>
         /// <param name="userService"></param>
-        /// <param name="identityService"></param>
-        public AccountController(IUserService userService, IIdentityService identityService)
-        {
-            _userService = userService;
-            _identityService = identityService;
-        }
+        public AccountController(IUserService userService)
+            => _userService = userService;
 
         /// <summary>
         /// 注册用户
@@ -64,6 +56,6 @@ namespace eShopLearning.Users.Controllers
         [HttpPut("PasswordModify")]
         [Authorize]
         public async Task<ResponseModel> PasswordModify([FromBody] UserPasswordModifyDto dto)
-            => await _userService.UserPasswordModify(long.TryParse(_identityService.GetUserIdentity(), out long parseResult) ? parseResult : 0, dto.OriginalPassword, dto.NewPassword);
+            => await _userService.UserPasswordModify(dto.UserId, dto.OriginalPassword, dto.NewPassword);
     }
 }
