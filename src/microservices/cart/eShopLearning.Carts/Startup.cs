@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using NConsul.AspNetCore;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Serilog;
@@ -83,6 +84,12 @@ namespace eShopLearning.Carts
                         .AddRedis(Configuration["RedisConnStr"],
                             name: "eShopLearning.UserService-check",
                             tags: new string[] { "eShopLearning.UserService" });
+            #endregion
+
+            #region consul
+            services.AddConsul(Configuration["ConsulAddress"])
+           .AddHttpHealthCheck("http://localhost:3356/api/Health/Check", 5, 10)
+           .RegisterService("microservice_carts", "localhost", 3356, new string[0]);
             #endregion
 
             services.AddAutoMapper(typeof(CustomProfile)); // automapper
