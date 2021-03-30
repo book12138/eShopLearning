@@ -250,7 +250,7 @@ namespace eShopLearning.Products.EFCoreRepositories.EFCore
             string[] csvheaders;
             try
             {
-                string[] requiredHeaders = { "Id", "Title", "SpuId", "RotatePictures", "OriginalPrice", "Price", "Inventory", "DetailContent"  };
+                string[] requiredHeaders = { "Id", "Title", "SpuId", "RotatePictures", "DetailContent", "Price", "OriginalPrice", "Inventory" };
                 csvheaders = GetHeaders(requiredHeaders, csvFile);
             }
             catch (Exception ex)

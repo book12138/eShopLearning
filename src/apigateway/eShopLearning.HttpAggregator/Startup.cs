@@ -122,6 +122,8 @@ namespace eShopLearning.HttpAggregator
             services.AddHttpClient<ICartService, CartService>()
               .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddHttpClient<IProductService, ProductService>()
+                .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
             #endregion
         }
 

@@ -74,11 +74,14 @@ namespace eShopLearning.Common.Extension.AspNetCoreFilter
         /// <param name="context"></param>
         public override void OnActionExecuted(ActionExecutedContext context)
         {
+            //_log.LogInformation("" +
+            //       "【当前响应接口】：{responsePath} \r\n" +
+            //       "【接口返回内容】： {response}", context.HttpContext.Request.Path, JsonConvert.SerializeObject(context.Result));
             _log.LogInformation("" +
-                   "【当前响应接口】：{responsePath} \r\n" +
-                   "【接口返回内容】： {response}", context.HttpContext.Request.Path, JsonConvert.SerializeObject(context.Result));
+                "【当前响应接口】：{responsePath} \r\n" +
+                "【接口返回内容】： {response}", context.HttpContext.Request.Path, context.Result);
 
-            base.OnActionExecuted(context);
+            base.OnActionExecuted(context); 
         }
     }
 }
