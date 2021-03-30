@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace eShopLearning.Carts.Controllers
 {
+    /// <summary>
+    /// 购物车服务
+    /// </summary>
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
@@ -33,13 +36,12 @@ namespace eShopLearning.Carts.Controllers
         /// <summary>
         /// 添加至购物车
         /// </summary>
-        /// <param name="productId"></param>
         /// <param name="userId"></param>
-        /// <param name="quantity"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        [HttpPost("AddProductToCart")]
-        public async Task<ResponseModel> AddProductToCart([FromBody] AddProductToCartDto req)
-            => await _cartService.AddProductToCart(req.SkuId, 1, req.Quantity);
+        [HttpPost("AddProductToCart/{userId}")]
+        public async Task<ResponseModel> AddProductToCart(long userId, [FromBody] AddProductToCartDto req)
+            => await _cartService.AddProductToCart(req.SkuId, userId, req.Quantity);
 
         /// <summary>
         /// 修改购物车中的商品数量
@@ -54,8 +56,7 @@ namespace eShopLearning.Carts.Controllers
         /// <summary>
         /// 删除购物车中的一件商品
         /// </summary>
-        /// <param name="productId"></param>
-        /// <param name="userId"></param>
+        /// <param name="productId"></param>        
         /// <returns></returns>
         [HttpDelete("RemoveCartProduct/{cartRecordId}")]
         public async Task<ResponseModel> RemoveCartProduct(long cartRecordId)
@@ -83,8 +84,8 @@ namespace eShopLearning.Carts.Controllers
         /// 获取用户购物车中的所有商品
         /// </summary>
         /// <returns></returns>
-        [HttpGet("GetUserCartAllProduct")]
-        public async Task<ResponseModel<IEnumerable<UserCartProductDto>>> GetUserCartAllProduct()
-            => await _cartService.GetUserCartAllProduct(1);
+        [HttpGet("GetUserCartAllProduct/{userId}")]
+        public async Task<ResponseModel<IEnumerable<UserCartProductDto>>> GetUserCartAllProduct(long userId)
+            => await _cartService.GetUserCartAllProduct(userId);
     }
 }
