@@ -68,14 +68,38 @@ namespace eShopLearning.Users
             #endregion
 
             #region swagger
-            services.AddSwaggerGen(c =>
-                   {
-                       c.SwaggerDoc("v1", new OpenApiInfo { Title = "eShopLearning User Microservice", Version = "v1" });
-                   });
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "eShop User Service",
+                    Version = "v1",
+                    Description = "eShop User Api Swagger UI"
+                });
+
+                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.OAuth2,
+                    Flows = new OpenApiOAuthFlows()
+                    {
+                        Implicit = new OpenApiOAuthFlow()
+                        {
+                            AuthorizationUrl = new Uri($"{Configuration.GetValue<string>("IdentityAuthServerUrl")}/connect/authorize"),
+                            TokenUrl = new Uri($"{Configuration.GetValue<string>("IdentityAuthServerUrl")}/connect/token"),
+                            Scopes = new Dictionary<string, string>()
+                             {
+                                 { "userapi", "user service api" }
+                             }
+                        }
+                    }
+                });
+
+                options.OperationFilter<AuthorizeCheckOperationFilter>();
+            });
             #endregion
 
             #region ef core
-            services.AddDbContext<ApplicationUserDbContext>(options =>
+                services.AddDbContext<ApplicationUserDbContext>(options =>
                      options.UseMySql(Configuration["MysqlConnStr"],
                      ServerVersion.AutoDetect(Configuration["MysqlConnStr"]),
                      mySqlOptionsAction: options =>
@@ -95,7 +119,7 @@ namespace eShopLearning.Users
 
             #region consul
             services.AddConsul(Configuration["ConsulAddress"])
-           .AddHttpHealthCheck("http://localhost:7648/api/Health/Check", 5, 10)
+           .AddHttpHealthCheck("http://localhost:1685/api/Health/Check", 5, 10)
            .RegisterService("microservice_users", "localhost", 1685, new string[0]);
             #endregion
 
@@ -138,12 +162,22 @@ namespace eShopLearning.Users
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
-            if (Env.IsDevelopment())
+            var pathBase = Configuration["PATH_BASE"];
+            if (!string.IsNullOrEmpty(pathBase))
             {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "eShopLearning User Microservice v1"));
+                Log.Information("当前应用运行路径为 '{pathBase}'", pathBase);
+                app.UsePathBase(pathBase);
             }
+
+            app.UseSwagger().UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint($"{ (!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty) }/swagger/v1/swagger.json", "Purchase BFF V1");
+
+                c.OAuthClientId("userserviceswaggerui");
+                c.OAuthClientSecret(string.Empty);
+                c.OAuthRealm(string.Empty);
+                c.OAuthAppName("eShop User Api Swagger UI");
+            });
 
             app.UseHttpsRedirection();
 

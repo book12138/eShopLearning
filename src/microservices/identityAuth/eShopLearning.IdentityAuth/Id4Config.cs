@@ -138,6 +138,17 @@ namespace IdentityServer4Demo
                         "cartapi"
                     }
                 },
+                // User Microservice Swagger UI
+                new Client
+                {
+                    ClientId = "userserviceswaggerui",
+                    ClientName = "User Microservice Swagger UI",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
+                    RedirectUris = { $"{clientUrls["userserviceswaggerui"]}/swagger/oauth2-redirect.html" },
+                    PostLogoutRedirectUris = { $"{clientUrls["userserviceswaggerui"]}/swagger/" },
+                    AllowedScopes = { "userapi" }
+                },
             };
         }
     }

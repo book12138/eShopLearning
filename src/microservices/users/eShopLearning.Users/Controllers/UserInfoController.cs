@@ -35,7 +35,7 @@ namespace eShopLearning.Users.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("GetUserInfo/[id]")]
+        [HttpGet("GetUserInfo/{id}")]
         [Authorize]
         public async Task<ResponseModel<UserInfoDto>> GetUserInfo(long id)
             => await _userService.GetUserInfo(id);

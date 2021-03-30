@@ -18,7 +18,8 @@ namespace eShopLearning.IdentityAuth.EFCoreConfig
             var clientUrls = new Dictionary<string, string>() { 
                 { "mvcclientdemo", configuration["ClientUrls:MvcClientDemo"] },
                 { "eshopuniapp", configuration["ClientUrls:EshopUniapp"] },
-                {"eshophttpaggswaggerui", configuration["ClientUrls:eShopHttpAggSwaggerUI"] }
+                {"eshophttpaggswaggerui", configuration["ClientUrls:eShopHttpAggSwaggerUI"] },
+                {"userserviceswaggerui", configuration["ClientUrls:UserServiceSwaggerUI"] },
             };
 
             if (!context.Clients.Any())

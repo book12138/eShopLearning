@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace eShopLearning.HttpAggregator.Aop
+namespace eShopLearning.Users.Aop
 {
     public class AuthorizeCheckOperationFilter : IOperationFilter
     {
@@ -30,7 +30,7 @@ namespace eShopLearning.HttpAggregator.Aop
                 {
                     new OpenApiSecurityRequirement
                     {
-                        [ oAuthScheme ] = new [] { "eShopLearning.HttpAggregator" }
+                        [ oAuthScheme ] = new [] { "eShopLearning.Users" }
                     }
                 };
         }

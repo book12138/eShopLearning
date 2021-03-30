@@ -5,8 +5,6 @@ using eShopLearning.Products.ApplicationServices.Impl;
 using eShopLearning.Products.AutoMapper;
 using eShopLearning.Products.Dto;
 using eShopLearning.Products.EFCoreRepositories.EFCore;
-using eShopLearning.Products.EFCoreRepositories.Entities;
-using eShopLearning.Products.Infrastructure.Helper;
 using eShopLearning.Users.EFCoreRepositories.Repositories;
 using eShopLearning.Users.EFCoreRepositories.Repositories.Impl;
 using FluentAssertions;
@@ -55,13 +53,12 @@ namespace eShopLearning.ProductsTesting
         public async Task AddProduct()
         {
             Fixture specimens = new Fixture();
-            var dto = new AddProductDto { Category = "123", Skus = new List<SkuDto> {
+            var result = await _productService.AddProduct("123", new List<SkuDto> {
                 specimens.Create<SkuDto>(),
                 specimens.Create<SkuDto>(),
                 specimens.Create<SkuDto>()
-            } };
-            var result = await _productService.AddProduct(dto);
-            result.Code.Should().Be(200);
+            });
+            result.isSuccess.Should().BeTrue();
             _eShopProductDbContext.Skus.Count().Should().Be(3);
         }
     }
