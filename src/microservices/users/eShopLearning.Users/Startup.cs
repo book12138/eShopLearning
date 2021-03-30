@@ -1,4 +1,4 @@
-using eShopLearning.Users.Aop;
+using eShopLearning.Common.Extension.AspNetCoreFilter;
 using eShopLearning.Users.ApplicationServices;
 using eShopLearning.Users.ApplicationServices.Impl;
 using eShopLearning.Users.AutoMapper;
@@ -10,14 +10,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NConsul.AspNetCore;
@@ -26,9 +23,7 @@ using Newtonsoft.Json.Serialization;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace eShopLearning.Users
 {

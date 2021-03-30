@@ -1,10 +1,10 @@
-using eShopLearning.Carts.Aop;
 using eShopLearning.Carts.ApplicationServices;
 using eShopLearning.Carts.ApplicationServices.Impl;
 using eShopLearning.Carts.AutoMapper;
 using eShopLearning.Carts.EFCoreRepositories.EFCore;
 using eShopLearning.Carts.EFCoreRepositories.Repositories;
 using eShopLearning.Carts.EFCoreRepositories.Repositories.Impl;
+using eShopLearning.Common.Extension.AspNetCoreFilter;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;

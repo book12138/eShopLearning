@@ -9,7 +9,7 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace eShopLearning.Carts.Aop
+namespace eShopLearning.Common.Extension.AspNetCoreFilter
 {
     /// <summary>
     /// action 全局监视
@@ -22,7 +22,7 @@ namespace eShopLearning.Carts.Aop
         private readonly ILogger _log;
 
         /// <summary>
-        /// 构造
+        /// 构造 
         /// </summary>
         /// <param name="logger"></param>
         public GlobalActionFilter(ILogger<GlobalActionFilter> logger)
@@ -63,8 +63,8 @@ namespace eShopLearning.Carts.Aop
             }          
 
             _log.LogInformation("" +
-               $"【当前请求接口】：{ apiPath } \r\n" +
-               $"【携带的参数有】： { JsonConvert.SerializeObject(context.ActionArguments) } \r\n");
+               "【当前请求接口】：{apiPath} \r\n" +
+               "【携带的参数有】： {args} \r\n", apiPath, JsonConvert.SerializeObject(context.ActionArguments));
             base.OnActionExecuting(context);
         }
 
@@ -75,8 +75,8 @@ namespace eShopLearning.Carts.Aop
         public override void OnActionExecuted(ActionExecutedContext context)
         {
             _log.LogInformation("" +
-                   $"【当前响应接口】：{context.HttpContext.Request.Path} \r\n" +
-                   $"【接口返回内容】： {JsonConvert.SerializeObject(context.Result)}");
+                   "【当前响应接口】：{responsePath} \r\n" +
+                   "【接口返回内容】： {response}", context.HttpContext.Request.Path, JsonConvert.SerializeObject(context.Result));
 
             base.OnActionExecuted(context);
         }

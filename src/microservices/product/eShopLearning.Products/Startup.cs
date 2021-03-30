@@ -1,5 +1,4 @@
-using Consul;
-using eShopLearning.Products.Aop;
+using eShopLearning.Common.Extension.AspNetCoreFilter;
 using eShopLearning.Products.ApplicationServices;
 using eShopLearning.Products.ApplicationServices.Impl;
 using eShopLearning.Products.AutoMapper;
@@ -10,7 +9,6 @@ using eShopLearning.Products.Domain.Events;
 using eShopLearning.Products.Domain.Events.Handlers;
 using eShopLearning.Products.EFCoreRepositories.EFCore;
 using eShopLearning.Products.gRPC;
-using eShopLearning.Products.gRPC.Protos;
 using eShopLearning.Users.EFCoreRepositories.Repositories;
 using eShopLearning.Users.EFCoreRepositories.Repositories.Impl;
 using HealthChecks.UI.Client;
@@ -154,40 +152,6 @@ namespace eShopLearning.Products
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            #region consul grpc health check(废弃代码)
-            // 服务注册
-            //var consulClient = new ConsulClient(u => u.Address = new Uri(Configuration["ConsulAddress"]));
-            //consulClient.Agent.ServiceRegister(new AgentServiceRegistration()
-            //{
-            //    ID = Guid.NewGuid().ToString(),
-            //    Name = "microservice_product",// 服务名
-            //    Address = "localhost", // 服务绑定IP
-            //    Port = 7648, // 服务绑定端口
-            //    Check = new AgentServiceCheck()
-            //    {
-            //        DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(5),//服务启动多久后注册
-            //        Interval = TimeSpan.FromSeconds(10),//健康检查时间间隔
-            //        HTTP = $"http://localhost:7648/api/Health/Check",//健康检查地址
-            //        Timeout = TimeSpan.FromSeconds(5)
-            //    }
-            //}).Wait();
-            //consulClient.Agent.ServiceRegister(new AgentServiceRegistration()
-            //{
-            //    ID = Guid.NewGuid().ToString(),
-            //    Name = "microservice_product_gRPC",// 服务名
-            //    Address = "localhost", // 服务绑定IP
-            //    Port = 8685, // 服务绑定端口
-            //    Check = new AgentServiceCheck()
-            //    {
-
-            //        DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(5),//服务启动多久后注册
-            //        Interval = TimeSpan.FromSeconds(10),//健康检查时间间隔
-            //        HTTP = $"localhost:8685/grpc.health.v1.Health/Check",//健康检查地址
-            //        Timeout = TimeSpan.FromSeconds(5)
-            //    }
-            //}).Wait();
-            #endregion
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

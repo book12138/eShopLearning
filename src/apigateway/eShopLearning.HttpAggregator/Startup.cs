@@ -1,18 +1,14 @@
+using eShopLearning.Common.Extension.AspNetCoreFilter;
 using eShopLearning.Common.HttpServices.HttpMessageHandler;
-using eShopLearning.HttpAggregator.Aop;
 using eShopLearning.HttpAggregator.ApplicationServices;
 using eShopLearning.HttpAggregator.ApplicationServices.Impl;
 using eShopLearning.Products.AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
@@ -20,8 +16,6 @@ using Newtonsoft.Json.Serialization;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace eShopLearning.HttpAggregator
 {

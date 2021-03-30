@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 
-namespace eShopLearning.Products.Aop
+namespace eShopLearning.Common.Extension.AspNetCoreFilter
 {
     /// <summary>
     /// 全局异常处理
@@ -17,10 +17,7 @@ namespace eShopLearning.Products.Aop
         /// 构造
         /// </summary>
         /// <param name="logger"></param>
-        public GlobalExceptionFilter(ILogger<GlobalExceptionFilter> logger)
-        {
-            _log = logger;
-        }
+        public GlobalExceptionFilter(ILogger<GlobalExceptionFilter> logger) => _log = logger;
 
         /// <summary>
         /// 当系统出现异常时
@@ -28,6 +25,7 @@ namespace eShopLearning.Products.Aop
         /// <param name="context"></param>
         public override void OnException(ExceptionContext context)
         {
+            _log.LogError(context.Exception.Message);
             _log.LogError(context.Exception.StackTrace);
         }
     }
