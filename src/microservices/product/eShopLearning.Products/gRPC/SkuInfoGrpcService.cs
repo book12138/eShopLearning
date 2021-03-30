@@ -60,7 +60,7 @@ namespace eShopLearning.Products.gRPC
         {
             _logger.LogInformation("本次搜索的关键字词是：{keyword}", request.Keyword);
             var searchResult = await _skuEsService.Search(request.Keyword, request.Page, request.Size);
-            _logger.LogInformation("最终的查询结果为：{searchResult}", searchResult);
+            _logger.LogInformation("最终的查询得到的数据条数为：{searchResultCount}", searchResult.Count());
             if (searchResult is null || searchResult.Any() is false)
                 return;
             

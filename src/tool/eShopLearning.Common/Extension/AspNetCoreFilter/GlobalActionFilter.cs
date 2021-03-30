@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization.Json;
@@ -20,25 +23,31 @@ namespace eShopLearning.Common.Extension.AspNetCoreFilter
         /// 日志
         /// </summary>
         private readonly ILogger _log;
+        /// <summary>
+        /// 定义不要打日志的接口集合
+        /// </summary>
+        private static HashSet<string> _doNotLogApis = new HashSet<string>(new []{
+            "/Health/Check"
+        });
+        /// <summary>
+        /// 定义不要对响应内容打日志的接口集合
+        /// </summary>
+        private static HashSet<string> _doNotLogResponseContentApis = new HashSet<string>(new[]{
+            "/Product/Search"
+        });
 
         /// <summary>
         /// 构造 
         /// </summary>
         /// <param name="logger"></param>
-        public GlobalActionFilter(ILogger<GlobalActionFilter> logger)
-        {
-            _log = logger;
-        }
+        public GlobalActionFilter(ILogger<GlobalActionFilter> logger) => _log = logger;
 
         /// <summary>
         /// 准备进入action
         /// </summary>
         /// <param name="context"></param>
         public override void OnActionExecuting(ActionExecutingContext context)
-        {
-            var userName = context?.HttpContext?.User?.Identity?.Name;
-            var apiPath = context?.HttpContext?.Request?.Path;
-
+        {           
             foreach (var item in context.ActionArguments)
             {
                 var jsonStr = JsonConvert.SerializeObject(item.Value);
@@ -60,11 +69,17 @@ namespace eShopLearning.Common.Extension.AspNetCoreFilter
                     }
                     
                 }
-            }          
+            }
 
-            _log.LogInformation("" +
-               "【当前请求接口】：{apiPath} \r\n" +
-               "【携带的参数有】： {args} \r\n", apiPath, JsonConvert.SerializeObject(context.ActionArguments));
+            var apiPath = context?.HttpContext?.Request?.Path;
+            var endpoint = context.HttpContext.Features.Get<IEndpointFeature>()?.Endpoint;
+            var controllerName = endpoint.Metadata.GetMetadata<ControllerActionDescriptor>().ControllerName;
+            var actionName = endpoint.Metadata.GetMetadata<ControllerActionDescriptor>().ActionName;
+
+            if (_doNotLogApis.Contains($"/{controllerName}/{actionName}") is false)
+                _log.LogInformation("" +
+                   "【当前请求接口】：{apiPath} \r\n" +
+                   "【携带的参数有】： {args} \r\n", apiPath, JsonConvert.SerializeObject(context.ActionArguments));
             base.OnActionExecuting(context);
         }
 
@@ -74,12 +89,25 @@ namespace eShopLearning.Common.Extension.AspNetCoreFilter
         /// <param name="context"></param>
         public override void OnActionExecuted(ActionExecutedContext context)
         {
-            //_log.LogInformation("" +
-            //       "【当前响应接口】：{responsePath} \r\n" +
-            //       "【接口返回内容】： {response}", context.HttpContext.Request.Path, JsonConvert.SerializeObject(context.Result));
-            _log.LogInformation("" +
-                "【当前响应接口】：{responsePath} \r\n" +
-                "【接口返回内容】： {response}", context.HttpContext.Request.Path, context.Result);
+            string apiPath = context.HttpContext.Request.Path;
+            var endpoint = context.HttpContext.Features.Get<IEndpointFeature>()?.Endpoint;
+            var controllerName = endpoint.Metadata.GetMetadata<ControllerActionDescriptor>().ControllerName;
+            var actionName = endpoint.Metadata.GetMetadata<ControllerActionDescriptor>().ActionName;
+
+            if (_doNotLogApis.Contains($"/{controllerName}/{actionName}") is true)
+            {
+                base.OnActionExecuted(context);
+                return;
+            }
+
+            if (_doNotLogResponseContentApis.Contains($"/{controllerName}/{actionName}") is false)
+                _log.LogInformation("" +
+                   "【当前响应接口】：{apiPath} \r\n" +
+                   "【接口返回内容】： {response}", apiPath, JsonConvert.SerializeObject(context.Result));
+            else
+                _log.LogInformation("" +
+                    "【当前响应接口】：{responsePath} \r\n" +
+                    "【接口返回内容】： {response}", context.HttpContext.Request.Path, "{ 系统内部已被设置为不显示 }");
 
             base.OnActionExecuted(context); 
         }
