@@ -86,14 +86,6 @@ namespace eShopLearning.Products
                      }));
             #endregion
 
-            #region health check
-            services.AddHealthChecks()
-                        .AddCheck("self", () => HealthCheckResult.Healthy())
-                        .AddRedis(Configuration["RedisConnStr"],
-                            name: "eShopLearning.UserService-check",
-                            tags: new string[] { "eShopLearning.UserService" });
-            #endregion
-
             #region elasticsearch
 
             services.AddSingleton<IElasticClient>(options =>
@@ -168,16 +160,6 @@ namespace eShopLearning.Products
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                /* health check */
-                endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
-                {
-                    Predicate = _ => true,
-                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                });
-                endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
-                {
-                    Predicate = r => r.Name.Contains("self")
-                });
                 /* gRPC */
                 endpoints.MapGrpcService<SkuInfoGrpcService>();
                 endpoints.MapGrpcService<HealthCheckGrpcService>();
