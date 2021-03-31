@@ -65,7 +65,7 @@ namespace eShopLearning.Carts
             #region swagger
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo
+                options.SwaggerDoc("cartApiDoc", new OpenApiInfo
                 {
                     Title = "eShop Cart Service",
                     Version = "v1",
@@ -156,7 +156,7 @@ namespace eShopLearning.Carts
             {
                 app.UseSwagger().UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint($"{ (!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty) }/swagger/v1/swagger.json", "Purchase BFF V1");
+                    c.SwaggerEndpoint($"{ (!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty) }/swagger/cartApiDoc/swagger.json", "Purchase BFF V1");
 
                     c.OAuthClientId("cartserviceswaggerui");
                     c.OAuthClientSecret(string.Empty);

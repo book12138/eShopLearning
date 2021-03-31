@@ -267,7 +267,7 @@ namespace eShopLearning.Products.EFCoreRepositories.EFCore
                         .OnCaughtException(ex => { logger.LogError(ex, "csv文件读取发生错误，具体错误信息为: {Message}", ex.Message); return null; })
                         .Where(x => x != null)
                         .ToList();
-            await  _skuEsService.SaveSkuData(skus);
+            await _skuEsService.SaveSkuData(skus);
             return skus;
         }
 

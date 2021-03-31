@@ -58,7 +58,7 @@ namespace eShopLearning.HttpAggregator
             #region swagger
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo
+                options.SwaggerDoc("eshopHttpAggDoc", new OpenApiInfo
                 {
                     Title = "Shopping Aggregator for Uniapp Clients",
                     Version = "v1",
@@ -139,7 +139,7 @@ namespace eShopLearning.HttpAggregator
 
             app.UseSwagger().UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint($"{ (!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty) }/swagger/v1/swagger.json", "Purchase BFF V1");
+                c.SwaggerEndpoint($"{ (!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty) }/swagger/eshopHttpAggDoc/swagger.json", "Purchase BFF V1");
 
                 c.OAuthClientId("eshophttpaggswaggerui");
                 c.OAuthClientSecret(string.Empty);

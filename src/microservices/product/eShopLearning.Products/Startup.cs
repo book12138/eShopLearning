@@ -12,6 +12,7 @@ using eShopLearning.Products.gRPC;
 using eShopLearning.Users.EFCoreRepositories.Repositories;
 using eShopLearning.Users.EFCoreRepositories.Repositories.Impl;
 using HealthChecks.UI.Client;
+using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -116,7 +117,7 @@ namespace eShopLearning.Products
             services.AddScoped<IRequestHandler<AddProductCommand, Unit>, ProductCommandHandler>(); // 领域命令         
             services.AddScoped<INotificationHandler<DomainNotification>, DomainNotificationHandler>(); // 领域通知
             services.AddScoped<INotificationHandler<AddProductEvent>, ProductEventHandler>(); // 领域事件
-            #endregion            
+            #endregion
 
             services.AddAutoMapper(typeof(CustomProfile)); // automapper
             services.AddGrpc(); // gRPC
@@ -133,11 +134,11 @@ namespace eShopLearning.Products
             #region swagger
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo
+                options.SwaggerDoc("productApiDoc", new OpenApiInfo
                 {
                     Title = "eShop Product Service",
                     Version = "v1",
-                    Description = "eShop User Api Swagger UI"
+                    Description = "eShop Product Api Swagger UI"
                 });
 
                 options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
@@ -151,7 +152,7 @@ namespace eShopLearning.Products
                             TokenUrl = new Uri($"{Configuration.GetValue<string>("IdentityAuthServerUrl")}/connect/token"),
                             Scopes = new Dictionary<string, string>()
                              {
-                                 { "produtapi", "product service api" }
+                                 { "productapi", "product service api" }
                              }
                         }
                     }
@@ -214,7 +215,7 @@ namespace eShopLearning.Products
             {
                 app.UseSwagger().UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint($"{ (!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty) }/swagger/v1/swagger.json", "Purchase BFF V1");
+                    c.SwaggerEndpoint($"{ (!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty) }/swagger/productApiDoc/swagger.json", "Purchase BFF V1");
 
                     c.OAuthClientId("productserviceswaggerui");
                     c.OAuthClientSecret(string.Empty);

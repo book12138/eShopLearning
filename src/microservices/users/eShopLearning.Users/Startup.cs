@@ -65,7 +65,7 @@ namespace eShopLearning.Users
             #region swagger
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo
+                options.SwaggerDoc("userApiDoc", new OpenApiInfo
                 {
                     Title = "eShop User Service",
                     Version = "v1",
@@ -160,7 +160,7 @@ namespace eShopLearning.Users
             {
                 app.UseSwagger().UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint($"{ (!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty) }/swagger/v1/swagger.json", "Purchase BFF V1");
+                    c.SwaggerEndpoint($"{ (!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty) }/swagger/userApiDoc/swagger.json", "Purchase BFF V1");
 
                     c.OAuthClientId("userserviceswaggerui");
                     c.OAuthClientSecret(string.Empty);

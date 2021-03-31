@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using eShopLearning.Products.Domain.Bus;
 using eShopLearning.Products.Domain.Commands;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 
 namespace eShopLearning.Products.Controllers
 {
@@ -72,29 +73,6 @@ namespace eShopLearning.Products.Controllers
         [HttpPost("AddProduct")]
         public async Task<ResponseModel> AddProduct([FromBody] AddProductDto dto)
         {
-            //if (!dto.Skus.Any())
-            //    return ResponseModel.BuildResponse(PublicStatusCode.Success);
-
-            //using (var conn = _rabbitmqConnFactory.CreateConnection())
-            //{
-            //    using (IModel channel = conn.CreateModel())
-            //    {
-            //        channel.QueueDeclare(queue: "new_sku", durable: true, exclusive: false, autoDelete: false, arguments: null);
-            //        var properties = channel.CreateBasicProperties();
-            //        properties.Persistent = true;
-
-            //        var body = JsonConvert.SerializeObject(dto);
-            //        channel.BasicPublish(exchange: "",
-            //                     routingKey: "new_sku",
-            //                     mandatory: true,
-            //                     basicProperties: properties,
-            //                     body: Encoding.UTF8.GetBytes(body));
-            //        return ResponseModel.BuildResponse(PublicStatusCode.Success);
-            //    }
-            //}
-
-            // await _productService.AddProduct(dto);
-
             await _applicationBus.SendCommand(new AddProductCommand(dto.Category, dto.Skus));
             if (this._domainNotification.HasNotifications())
                 return ResponseModel.BuildResponse(PublicStatusCode.Fail, 
@@ -114,6 +92,10 @@ namespace eShopLearning.Products.Controllers
         public async Task<IEnumerable<EsSkuDto>> Search(string keyword, int page, int size)
             => await _skuEsService.Search(keyword, page, size);
 
+        /// <summary>
+        /// 将库中的所有sku数据添加到es
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("AddAllSkuToEs")]
         public async Task<IActionResult> AddAllSkuToEs()
         {
