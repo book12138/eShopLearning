@@ -104,14 +104,6 @@ namespace eShopLearning.Carts
                      }));
             #endregion
 
-            #region health check
-            services.AddHealthChecks()
-                        .AddCheck("self", () => HealthCheckResult.Healthy())
-                        .AddRedis(Configuration["RedisConnStr"],
-                            name: "eShopLearning.UserService-check",
-                            tags: new string[] { "eShopLearning.UserService" });
-            #endregion
-
             #region consul
             services.AddConsul(Configuration["ConsulAddress"])
            .AddHttpHealthCheck("http://localhost:3356/api/Health/Check", 5, 10)
@@ -186,15 +178,6 @@ namespace eShopLearning.Carts
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
-                {
-                    Predicate = _ => true,
-                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                });
-                endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
-                {
-                    Predicate = r => r.Name.Contains("self")
-                });
             });
         }
     }
