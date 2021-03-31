@@ -164,15 +164,20 @@ namespace eShopLearning.Users
                 app.UsePathBase(pathBase);
             }
 
-            app.UseSwagger().UseSwaggerUI(c =>
+            if(Env.IsDevelopment() || Env.IsStaging())
             {
-                c.SwaggerEndpoint($"{ (!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty) }/swagger/v1/swagger.json", "Purchase BFF V1");
+                app.UseSwagger().UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint($"{ (!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty) }/swagger/v1/swagger.json", "Purchase BFF V1");
 
-                c.OAuthClientId("userserviceswaggerui");
-                c.OAuthClientSecret(string.Empty);
-                c.OAuthRealm(string.Empty);
-                c.OAuthAppName("eShop User Api Swagger UI");
-            });
+                    c.OAuthClientId("userserviceswaggerui");
+                    c.OAuthClientSecret(string.Empty);
+                    c.OAuthRealm(string.Empty);
+                    c.OAuthAppName("eShop User Api Swagger UI");
+                });
+
+                app.UseViewConfig(x => x.RenderPage());
+            }
 
             app.UseHttpsRedirection();
 
