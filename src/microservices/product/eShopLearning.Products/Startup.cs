@@ -30,6 +30,7 @@ using Newtonsoft.Json.Serialization;
 using RabbitMQ.Client;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace eShopLearning.Products
@@ -129,6 +130,37 @@ namespace eShopLearning.Products
                 .RegisterService("microservice_product_grpc", "localhost", 8685, new string[0]);
             #endregion
 
+            #region swagger
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "eShop Product Service",
+                    Version = "v1",
+                    Description = "eShop User Api Swagger UI"
+                });
+
+                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.OAuth2,
+                    Flows = new OpenApiOAuthFlows()
+                    {
+                        Implicit = new OpenApiOAuthFlow()
+                        {
+                            AuthorizationUrl = new Uri($"{Configuration.GetValue<string>("IdentityAuthServerUrl")}/connect/authorize"),
+                            TokenUrl = new Uri($"{Configuration.GetValue<string>("IdentityAuthServerUrl")}/connect/token"),
+                            Scopes = new Dictionary<string, string>()
+                             {
+                                 { "produtapi", "product service api" }
+                             }
+                        }
+                    }
+                });
+
+                options.OperationFilter<AuthorizeCheckOperationFilter>();
+            });
+            #endregion
+
             #region authentication
             var identityUrl = Configuration.GetValue<string>("IdentityAuthServerUrl");
             services.AddAuthentication("Bearer")
@@ -171,11 +203,26 @@ namespace eShopLearning.Products
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+            var pathBase = Configuration["PATH_BASE"];
+            if (!string.IsNullOrEmpty(pathBase))
             {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "eShopLearning.Products v1"));
+                Log.Information("当前应用运行路径为 '{pathBase}'", pathBase);
+                app.UsePathBase(pathBase);
+            }
+
+            if (Env.IsDevelopment() || Env.IsStaging())
+            {
+                app.UseSwagger().UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint($"{ (!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty) }/swagger/v1/swagger.json", "Purchase BFF V1");
+
+                    c.OAuthClientId("productserviceswaggerui");
+                    c.OAuthClientSecret(string.Empty);
+                    c.OAuthRealm(string.Empty);
+                    c.OAuthAppName("eShop Product Api Swagger UI");
+                });
+
+                app.UseViewConfig(u => u.RenderPage());
             }
 
             app.UseHttpsRedirection();

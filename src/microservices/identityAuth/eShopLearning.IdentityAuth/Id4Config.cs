@@ -149,7 +149,7 @@ namespace IdentityServer4Demo
                     PostLogoutRedirectUris = { $"{clientUrls["userserviceswaggerui"]}/swagger/" },
                     AllowedScopes = { "userapi" }
                 },
-                 // Cart Microservice Swagger UI
+                // Cart Microservice Swagger UI
                 new Client
                 {
                     ClientId = "cartserviceswaggerui",
@@ -159,6 +159,17 @@ namespace IdentityServer4Demo
                     RedirectUris = { $"{clientUrls["cartserviceswaggerui"]}/swagger/oauth2-redirect.html" },
                     PostLogoutRedirectUris = { $"{clientUrls["cartserviceswaggerui"]}/swagger/" },
                     AllowedScopes = { "cartapi" }
+                },
+                // Product Microservice Swagger UI
+                new Client
+                {
+                    ClientId = "productserviceswaggerui",
+                    ClientName = "Product Microservice Swagger UI",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
+                    RedirectUris = { $"{clientUrls["productserviceswaggerui"]}/swagger/oauth2-redirect.html" },
+                    PostLogoutRedirectUris = { $"{clientUrls["productserviceswaggerui"]}/swagger/" },
+                    AllowedScopes = { "productapi" }
                 },
             };
         }
