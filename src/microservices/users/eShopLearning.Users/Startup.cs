@@ -102,15 +102,7 @@ namespace eShopLearning.Users
                          options.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
                          options.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
                      }));
-            #endregion
-
-            #region health check
-            services.AddHealthChecks()
-                        .AddCheck("self", () => HealthCheckResult.Healthy())
-                        .AddRedis(Configuration["RedisConnStr"],
-                            name: "eShopLearning.UserService-check",
-                            tags: new string[] { "eShopLearning.UserService" });
-            #endregion
+            #endregion            
 
             #region consul
             services.AddConsul(Configuration["ConsulAddress"])
@@ -190,15 +182,6 @@ namespace eShopLearning.Users
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
-                {
-                    Predicate = _ => true,
-                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                });
-                endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
-                {
-                    Predicate = r => r.Name.Contains("self")
-                });
             });
         }
     }
