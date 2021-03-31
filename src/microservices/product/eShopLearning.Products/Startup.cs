@@ -21,6 +21,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NConsul.AspNetCore;
 using Nest;
@@ -128,6 +129,32 @@ namespace eShopLearning.Products
                 .RegisterService("microservice_product_grpc", "localhost", 8685, new string[0]);
             #endregion
 
+            #region authentication
+            var identityUrl = Configuration.GetValue<string>("IdentityAuthServerUrl");
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    // 指定要接入的授权服务器地址
+                    options.Authority = identityUrl;
+                    // 在验证token时，不验证Audience
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false
+                    };
+                    // 不使用Https
+                    options.RequireHttpsMetadata = false;
+                });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("eshopApiScop", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", "productapi");
+                });
+            });
+            #endregion
+
             #region application repositories
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ISkuRepository, SkuRepository>();
@@ -154,6 +181,8 @@ namespace eShopLearning.Products
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
