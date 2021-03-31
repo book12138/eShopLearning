@@ -160,20 +160,27 @@ namespace eShopLearning.Carts
                 app.UsePathBase(pathBase);
             }
 
-            app.UseSwagger().UseSwaggerUI(c =>
+            if(Env.IsDevelopment() || Env.IsStaging())
             {
-                c.SwaggerEndpoint($"{ (!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty) }/swagger/v1/swagger.json", "Purchase BFF V1");
+                app.UseSwagger().UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint($"{ (!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty) }/swagger/v1/swagger.json", "Purchase BFF V1");
 
-                c.OAuthClientId("cartserviceswaggerui");
-                c.OAuthClientSecret(string.Empty);
-                c.OAuthRealm(string.Empty);
-                c.OAuthAppName("eShop Cart Api Swagger UI");
-            });
+                    c.OAuthClientId("cartserviceswaggerui");
+                    c.OAuthClientSecret(string.Empty);
+                    c.OAuthRealm(string.Empty);
+                    c.OAuthAppName("eShop Cart Api Swagger UI");
+                });
+
+                app.UseViewConfig(u => u.RenderPage());
+            }
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
             app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
