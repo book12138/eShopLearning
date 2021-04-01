@@ -12,7 +12,6 @@ using eShopLearning.Products.gRPC;
 using eShopLearning.Users.EFCoreRepositories.Repositories;
 using eShopLearning.Users.EFCoreRepositories.Repositories.Impl;
 using HealthChecks.UI.Client;
-using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;

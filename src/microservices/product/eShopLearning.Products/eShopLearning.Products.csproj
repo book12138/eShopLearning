@@ -62,7 +62,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\tool\eShopLearning.Common\eShopLearning.Common.csproj" />
+    <ProjectReference Include="..\..\..\tool\eShopLearning.Common\eShopLearning.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
