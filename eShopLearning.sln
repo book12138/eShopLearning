@@ -15,11 +15,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "identityAuth", "identityAut
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "apigateway", "apigateway", "{5E70F8A2-AF32-4FD8-8CDE-A278C5289333}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.Users", "src\distributed\microservices\users\eShopLearning.Users\eShopLearning.Users.csproj", "{667679A6-B036-4652-A75E-97344B1F0F76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.Users", "src\microservices\users\eShopLearning.Users\eShopLearning.Users.csproj", "{667679A6-B036-4652-A75E-97344B1F0F76}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{7D2E53BE-5761-47DB-943E-F351DAE8A819}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.UsersTesting", "src\distributed\microservices\users\test\eShopLearning.UsersTesting\eShopLearning.UsersTesting.csproj", "{E695A4D0-73E3-4A3E-92DC-F2E308012042}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.UsersTesting", "src\microservices\users\test\eShopLearning.UsersTesting\eShopLearning.UsersTesting.csproj", "{E695A4D0-73E3-4A3E-92DC-F2E308012042}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.IdentityAuth", "src\authServer\eShopLearning.IdentityAuth\eShopLearning.IdentityAuth.csproj", "{3A0B76B5-9375-4AB8-8506-13E8AA5EF869}"
 EndProject
@@ -33,15 +33,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGatewayDemo", "src\authS
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cart", "cart", "{6D7E6C1F-61D8-4361-AA8D-DB850AD4E1B5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.Carts", "src\distributed\microservices\cart\eShopLearning.Carts\eShopLearning.Carts.csproj", "{22BA3CFF-D5DD-453A-9776-542506F42D3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.Carts", "src\microservices\cart\eShopLearning.Carts\eShopLearning.Carts.csproj", "{22BA3CFF-D5DD-453A-9776-542506F42D3E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{40EBD82C-C6A8-497F-AB21-AA3A64D13F42}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.CartsTesting", "src\distributed\microservices\cart\test\eShopLearning.CartsTesting\eShopLearning.CartsTesting.csproj", "{160A3E37-C92A-4D11-8B69-8EEBD5F14F25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.CartsTesting", "src\microservices\cart\test\eShopLearning.CartsTesting\eShopLearning.CartsTesting.csproj", "{160A3E37-C92A-4D11-8B69-8EEBD5F14F25}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "product", "product", "{112F20F2-9290-49C8-BC3D-C964AA4ED0C0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.Products", "src\distributed\microservices\product\eShopLearning.Products\eShopLearning.Products.csproj", "{C7851659-3283-48D8-B825-67BE6FD766E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.Products", "src\microservices\product\eShopLearning.Products\eShopLearning.Products.csproj", "{C7851659-3283-48D8-B825-67BE6FD766E5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tool", "tool", "{4B3E9707-DDD9-49C2-B119-16D706F3A4CD}"
 EndProject
@@ -49,15 +49,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.JdDataAnalysi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{188160D8-EF0B-4DC1-B907-F19F62014C6F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.ProductsTesting", "src\distributed\microservices\product\test\eShopLearning.ProductsTesting\eShopLearning.ProductsTesting.csproj", "{68950B42-DB5F-48B7-8B70-EF1B170D618C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.ProductsTesting", "src\microservices\product\test\eShopLearning.ProductsTesting\eShopLearning.ProductsTesting.csproj", "{68950B42-DB5F-48B7-8B70-EF1B170D618C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.Common", "src\tool\eShopLearning.Common\eShopLearning.Common.csproj", "{CC7A1E57-4F37-4F16-A4C8-A9D02C4256A7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.HttpAggregator", "src\distributed\apigateway\eShopLearning.HttpAggregator\eShopLearning.HttpAggregator.csproj", "{E86B4B82-B9EC-49DF-99A6-A495F64F56B7}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "distributed", "distributed", "{BE184B8B-DF34-408C-91B2-D1A9FA69BD67}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "monolithic", "monolithic", "{4A80238A-4181-4A5B-BD8F-973919CEECED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.WapAggregator", "src\apigateway\eShopLearning.WapAggregator\eShopLearning.WapAggregator.csproj", "{E86B4B82-B9EC-49DF-99A6-A495F64F56B7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "authServer", "authServer", "{FB900D6B-6969-4371-8877-6AB61A48A154}"
 EndProject
@@ -124,10 +120,10 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{C018CA05-9E04-462F-A325-FAE2D5F74634} = {BE184B8B-DF34-408C-91B2-D1A9FA69BD67}
+		{C018CA05-9E04-462F-A325-FAE2D5F74634} = {556AEFA5-8845-4285-B355-F8BB3F3A11EE}
 		{EFC0840B-343F-481D-BBA0-6C042349500D} = {C018CA05-9E04-462F-A325-FAE2D5F74634}
 		{7918254C-0640-41B9-BCE0-3F9258C0680C} = {FB900D6B-6969-4371-8877-6AB61A48A154}
-		{5E70F8A2-AF32-4FD8-8CDE-A278C5289333} = {BE184B8B-DF34-408C-91B2-D1A9FA69BD67}
+		{5E70F8A2-AF32-4FD8-8CDE-A278C5289333} = {556AEFA5-8845-4285-B355-F8BB3F3A11EE}
 		{667679A6-B036-4652-A75E-97344B1F0F76} = {EFC0840B-343F-481D-BBA0-6C042349500D}
 		{7D2E53BE-5761-47DB-943E-F351DAE8A819} = {EFC0840B-343F-481D-BBA0-6C042349500D}
 		{E695A4D0-73E3-4A3E-92DC-F2E308012042} = {7D2E53BE-5761-47DB-943E-F351DAE8A819}
@@ -148,8 +144,6 @@ Global
 		{68950B42-DB5F-48B7-8B70-EF1B170D618C} = {188160D8-EF0B-4DC1-B907-F19F62014C6F}
 		{CC7A1E57-4F37-4F16-A4C8-A9D02C4256A7} = {4B3E9707-DDD9-49C2-B119-16D706F3A4CD}
 		{E86B4B82-B9EC-49DF-99A6-A495F64F56B7} = {5E70F8A2-AF32-4FD8-8CDE-A278C5289333}
-		{BE184B8B-DF34-408C-91B2-D1A9FA69BD67} = {556AEFA5-8845-4285-B355-F8BB3F3A11EE}
-		{4A80238A-4181-4A5B-BD8F-973919CEECED} = {556AEFA5-8845-4285-B355-F8BB3F3A11EE}
 		{FB900D6B-6969-4371-8877-6AB61A48A154} = {556AEFA5-8845-4285-B355-F8BB3F3A11EE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
