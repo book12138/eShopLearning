@@ -114,6 +114,7 @@ namespace eShopLearning.Products
             services.AddMediatR(typeof(Startup)); // MediatR
             services.AddScoped<IApplicationBus, ApplicationBus>(); // bus            
             services.AddScoped<IRequestHandler<AddProductCommand, Unit>, ProductCommandHandler>(); // 领域命令         
+            services.AddScoped<IRequestHandler<SkuInfoPersistentToEsCommand, Unit>, ProductCommandHandler>();
             services.AddScoped<INotificationHandler<DomainNotification>, DomainNotificationHandler>(); // 领域通知
             services.AddScoped<INotificationHandler<AddProductEvent>, ProductEventHandler>(); // 领域事件
             #endregion

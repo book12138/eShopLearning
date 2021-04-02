@@ -13,10 +13,6 @@ namespace eShopLearning.Products.Domain.Events.Handlers
         : INotificationHandler<AddProductEvent>
     {
         /// <summary>
-        /// es 数据服务
-        /// </summary>
-        private readonly ISkuEsService _skuEsService;
-        /// <summary>
         /// 日志
         /// </summary>
         private readonly ILogger _logger;
@@ -25,9 +21,8 @@ namespace eShopLearning.Products.Domain.Events.Handlers
         /// </summary>
         /// <param name="skuEsService"></param>
         /// <param name="logger"></param>
-        public ProductEventHandler(ISkuEsService skuEsService, ILogger<ProductEventHandler> logger)
+        public ProductEventHandler(ILogger<ProductEventHandler> logger)
         {
-            this._skuEsService = skuEsService;
             this._logger = logger;
         }
 
@@ -39,8 +34,7 @@ namespace eShopLearning.Products.Domain.Events.Handlers
         /// <returns></returns>
         public async Task Handle(AddProductEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("将新产品数据存储到es中");
-            await _skuEsService.SaveSkuData(notification.Skus);
+            _logger.LogInformation("产品添加流程结束。注意此消息会重复一次以上，事件是多播，命令才是单播");
             await Task.CompletedTask;
         }
     }

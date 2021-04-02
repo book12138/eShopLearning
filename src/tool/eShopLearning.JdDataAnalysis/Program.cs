@@ -64,7 +64,7 @@ Console.ForegroundColor = ConsoleColor.Cyan;
 Console.WriteLine("嗨，爬虫出发 " + DateTime.Now);
 
 //await _productDataGrabService.GrabDataFromSearchPage("短袖T恤 男", "6778073159441805314", 1);
-await _productDataGrabService.GrabDataFromSearchPage("白衬衫 女", "6778073159441805319", 1);
+await _productDataGrabService.GrabDataFromSearchPage("小西装 女", "6778073159441805320", 1);
 
 Console.WriteLine("按下任意键继续......");
 Console.ReadKey();

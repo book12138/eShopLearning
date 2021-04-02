@@ -13,7 +13,5 @@ namespace eShopLearning.Products.Domain.Events
     /// </summary>
     public class AddProductEvent : DomainEvent
     {
-        public IEnumerable<Sku> Skus { get; set; }
-        public AddProductEvent(IEnumerable<Sku> skus) => this.Skus = skus;
     }
 }
