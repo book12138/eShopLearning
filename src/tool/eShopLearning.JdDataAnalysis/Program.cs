@@ -50,7 +50,7 @@ IServiceProvider ConfigureServices()
     services.AddTransient<IConnectionFactory>(u => new ConnectionFactory() { 
         HostName = configuration["RabbitMQ:HostName"], 
         UserName = configuration["RabbitMQ:UserName"],
-        Password = configuration["RabbitMQ:Password"],
+        Password = configuration["RabbitMQ:Password"],  
         Port = int.TryParse(configuration["RabbitMQ:Port"], out int parseResult) ? parseResult : 5672
     });
 

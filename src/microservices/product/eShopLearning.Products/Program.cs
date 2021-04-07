@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System.IO;
 using eShopLearning.Products.ApplicationServices;
+using Com.Ctrip.Framework.Apollo;
 
 string _namespace = typeof(Startup).Namespace;
 string _appName = _namespace.Substring(_namespace.LastIndexOf('.', _namespace.LastIndexOf('.') - 1) + 1);
@@ -38,10 +39,13 @@ Log.Logger = CreateSerilogLogger(configuration);
 IWebHost BuildWebHost(IConfiguration configuration, string[] args) =>
     WebHost.CreateDefaultBuilder(args)
         .CaptureStartupErrors(false)
-        .ConfigureAppConfiguration(x => x.AddConfiguration(configuration))
+        .ConfigureAppConfiguration(x => {
+            x.AddConfiguration(configuration);
+            x.AddApollo(configuration.GetSection("Apollo")).AddDefault(); // apollo config
+        })
         .UseStartup<Startup>()
         .UseContentRoot(Directory.GetCurrentDirectory())
-        .UseSerilog()
+        .UseSerilog()        
         .Build();
 
 var host = BuildWebHost(configuration, args);
