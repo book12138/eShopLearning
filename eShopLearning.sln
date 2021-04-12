@@ -55,6 +55,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.WapAggregator
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "authServer", "authServer", "{FB900D6B-6969-4371-8877-6AB61A48A154}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "aggregator", "aggregator", "{60A8A695-4F89-4846-9A98-571C8C04BCB8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopLearning.CartProductAggregator", "src\microservices\aggregator\eShopLearning.CartProductAggregator\eShopLearning.CartProductAggregator.csproj", "{7582CC39-E1CE-4B00-B64B-4E7487A4C31B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -113,6 +117,10 @@ Global
 		{E86B4B82-B9EC-49DF-99A6-A495F64F56B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E86B4B82-B9EC-49DF-99A6-A495F64F56B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E86B4B82-B9EC-49DF-99A6-A495F64F56B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7582CC39-E1CE-4B00-B64B-4E7487A4C31B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7582CC39-E1CE-4B00-B64B-4E7487A4C31B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7582CC39-E1CE-4B00-B64B-4E7487A4C31B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7582CC39-E1CE-4B00-B64B-4E7487A4C31B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -142,6 +150,8 @@ Global
 		{CC7A1E57-4F37-4F16-A4C8-A9D02C4256A7} = {4B3E9707-DDD9-49C2-B119-16D706F3A4CD}
 		{E86B4B82-B9EC-49DF-99A6-A495F64F56B7} = {5E70F8A2-AF32-4FD8-8CDE-A278C5289333}
 		{FB900D6B-6969-4371-8877-6AB61A48A154} = {556AEFA5-8845-4285-B355-F8BB3F3A11EE}
+		{60A8A695-4F89-4846-9A98-571C8C04BCB8} = {C018CA05-9E04-462F-A325-FAE2D5F74634}
+		{7582CC39-E1CE-4B00-B64B-4E7487A4C31B} = {60A8A695-4F89-4846-9A98-571C8C04BCB8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D3249233-9B00-40A3-8B8E-4566F8A13CBD}
