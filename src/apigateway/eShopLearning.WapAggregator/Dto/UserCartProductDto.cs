@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace eShopLearning.Carts.Dto
+namespace eShopLearning.WapAggregator.Dto
 {
     public class UserCartProductDto
     {
@@ -19,5 +19,9 @@ namespace eShopLearning.Carts.Dto
         /// 数量
         /// </summary>
         public int Quantity { get; set; }
+        /// <summary>
+        /// sku信息
+        /// </summary>
+        public SkuBasicInfo SkuBasicInfo { get; set; }
     }
 }

@@ -120,6 +120,6 @@ namespace eShopLearning.Carts.ApplicationServices.Impl
         /// <param name="userId"></param>
         /// <returns></returns>
         public async Task<ResponseModel<IEnumerable<UserCartProductDto>>> GetUserCartAllProduct(long userId)
-            => new ResponseModel<IEnumerable<UserCartProductDto>> { Code = 200, Data = await _eShopCartDbContext.Carts.Where(u => u.UserId == userId).Select(u => new UserCartProductDto { SkuId = u.SkuId, Quantity = u.Quantity }).ToListAsync() };
+            => new ResponseModel<IEnumerable<UserCartProductDto>> { Code = 200, Data = await _eShopCartDbContext.Carts.Where(u => u.UserId == userId).Select(u => new UserCartProductDto { SkuId = u.SkuId, Quantity = u.Quantity, CartRecordId = u.Id }).ToListAsync() };
     }
 }

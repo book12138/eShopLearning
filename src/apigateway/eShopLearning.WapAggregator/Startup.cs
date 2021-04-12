@@ -16,6 +16,9 @@ using Newtonsoft.Json.Serialization;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using Ocelot.DependencyInjection;
+using Ocelot.Provider.Consul;
+using Ocelot.Middleware;
 
 namespace eShopLearning.WapAggregator
 {
@@ -125,6 +128,8 @@ namespace eShopLearning.WapAggregator
             services.AddHttpClient<IProductService, ProductService>()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
             #endregion
+
+            services.AddOcelot().AddConsul();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -148,6 +153,8 @@ namespace eShopLearning.WapAggregator
             });
 
             app.UseHttpsRedirection();
+
+            app.UseOcelot().Wait();
 
             app.UseRouting();
             app.UseAuthentication();
