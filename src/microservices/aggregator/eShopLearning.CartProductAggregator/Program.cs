@@ -1,26 +1,46 @@
+using eShopLearning.CartProductAggregator;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Serilog;
+using System.IO;
 
-namespace eShopLearning.CartProductAggregator
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+string _namespace = typeof(Startup).Namespace;
+string _appName = _namespace.Substring(_namespace.LastIndexOf('.', _namespace.LastIndexOf('.') - 1) + 1);
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
-}
+#region 定义 IConfiguration 实例获取方法
+IConfiguration GetConfiguration()
+    => (new ConfigurationBuilder()
+        .SetBasePath(Directory.GetCurrentDirectory())
+        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+        .AddEnvironmentVariables()).Build();
+#endregion
+
+#region 定义 serilog
+Serilog.ILogger CreateSerilogLogger(IConfiguration configuration)
+    => new LoggerConfiguration()
+        .MinimumLevel.Verbose()
+        .Enrich.WithProperty("ApplicationContext", _appName)
+        .Enrich.FromLogContext()
+        .WriteTo.Console()
+        .WriteTo.Http(configuration["Serilog:LogstashgUrl"] ?? "http://localhost:8080") // ELK + Serilog 实现日志中心
+        .ReadFrom.Configuration(configuration)
+        .CreateLogger();
+#endregion
+
+var configuration = GetConfiguration();
+Log.Logger = CreateSerilogLogger(configuration);
+IWebHost BuildWebHost(IConfiguration configuration, string[] args) =>
+    WebHost.CreateDefaultBuilder(args)
+        .CaptureStartupErrors(false)
+        .ConfigureAppConfiguration(x => x.AddConfiguration(configuration).AddJsonFile("ocelot_router.json")) // 将 ocelot 的路由配置添加到configuration中
+        .UseStartup<Startup>()
+        .UseContentRoot(Directory.GetCurrentDirectory())
+        .UseSerilog()
+        .Build();
+
+var host = BuildWebHost(configuration, args);
+
+host.Run(); // 启动应用
