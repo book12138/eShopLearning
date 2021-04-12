@@ -154,7 +154,7 @@ namespace eShopLearning.WapAggregator
 
             app.UseHttpsRedirection();
 
-            app.UseOcelot().Wait();
+            //app.UseOcelot().Wait();
 
             app.UseRouting();
             app.UseAuthentication();

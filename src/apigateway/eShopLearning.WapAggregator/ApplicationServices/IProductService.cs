@@ -1,4 +1,6 @@
 ﻿using eShopLearning.Common;
+using eShopLearning.WapAggregator.ApplicationGrpcRemoteServices.Protos;
+using eShopLearning.WapAggregator.Dto;
 using eShopLearning.WapAggregator.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -17,6 +19,11 @@ namespace eShopLearning.WapAggregator.ApplicationServices
         /// <param name="size">每页显示的数量</param>
         /// <returns></returns>
         IAsyncEnumerable<ResponseModel<SearchViewModel>> Search(string keyword, int page, int size);
-        
+        /// <summary>
+        /// 根据skuid获取sku基础信息
+        /// </summary>
+        /// <param name="skuId"></param>
+        /// <returns></returns>
+        Task<SkuBasicInfo> GetSkuBasikInfoAsId(string skuId);
     }
 }

@@ -127,7 +127,7 @@ namespace eShopLearning.IdentityAuth.Quickstart.UI
                             var req = new { username = model.Username, password = model.Password };
                             var encodedContent = new StringContent(JsonConvert.SerializeObject(req));
                             encodedContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                            var responseTask = httpClient.PostAsync(_configuration["UserServiceApi"] + "/v1/Account/PasswordCheck", encodedContent);
+                            var responseTask = httpClient.PostAsync(_configuration["UserServiceApi"] + "/api/Account/PasswordCheck", encodedContent);
                             var response = responseTask.Result;
                             if (response.StatusCode != System.Net.HttpStatusCode.OK)
                                 throw new Exception("未能正确请求用户服务");

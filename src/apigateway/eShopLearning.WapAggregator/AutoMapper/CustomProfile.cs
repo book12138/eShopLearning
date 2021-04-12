@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
-using eShopLearning.WapAggregator.gRPC.Protos;
+using eShopLearning.WapAggregator.ApplicationGrpcRemoteServices.Protos;
+using eShopLearning.WapAggregator.Dto;
 using eShopLearning.WapAggregator.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace eShopLearning.Products.AutoMapper
 {
@@ -17,6 +14,9 @@ namespace eShopLearning.Products.AutoMapper
         {
             CreateMap<SearchReply, SearchViewModel>()
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(src => decimal.Parse(src.Price.ToString())));
+            CreateMap<GetSkuBasikInfoAsIdReply, SkuBasicInfo>()
+                .ForMember(dest => dest.SkuAttrs, opt => opt.MapFrom(src => SplitStrAsComma(src.SkuAttrs ?? "")));
+            CreateMap<UserCartQueryResponseDto, UserCartProductDto>();
         }
 
         /// <summary>

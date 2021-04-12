@@ -36,7 +36,7 @@ namespace eShopLearning.WapAggregator.Controllers.v1
         /// <param name="page">页数</param>
         /// <param name="size">显示数量</param>
         /// <returns></returns>
-        [HttpGet("search/{keyword}/{page}/{size}")]
+        [HttpGet("Search/{keyword}/{page}/{size}")]
         public async IAsyncEnumerable<ResponseModel<SearchViewModel>> Search(string keyword, int page, int size)
         {
             await foreach (var item in _productService.Search(keyword, page, size)) 

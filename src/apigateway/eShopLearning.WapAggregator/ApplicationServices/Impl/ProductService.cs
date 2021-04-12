@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using Consul;
 using eShopLearning.Common;
-using eShopLearning.WapAggregator.gRPC.Protos;
+using eShopLearning.WapAggregator.ApplicationGrpcRemoteServices.Protos;
+using eShopLearning.WapAggregator.Dto;
 using eShopLearning.WapAggregator.ViewModel;
 using Grpc.Core;
 using Grpc.Net.Client;
@@ -62,13 +63,37 @@ namespace eShopLearning.WapAggregator.ApplicationServices.Impl
                 {
                     var service = services.ElementAt(new Random().Next(services.Count()));
 
-                    using var channel = GrpcChannel.ForAddress($"http://{service.ServiceAddress}:{service.ServicePort}/Search");
+                    using var channel = GrpcChannel.ForAddress($"http://{service.ServiceAddress}:{service.ServicePort}/");
                     var client = new SkuInfoGrpc.SkuInfoGrpcClient(channel);
                     var reply = client.Search(new SearchRequest { Keyword = keyword, Page = page, Size = size });
                     await foreach (var item in reply.ResponseStream.ReadAllAsync())
                         yield return ResponseModel<SearchViewModel>.BuildResponse(PublicStatusCode.Success, _mapper.Map<SearchViewModel>(item));
                 }
                 else yield return ResponseModel<SearchViewModel>.BuildResponse(PublicStatusCode.Fail, "服务器异常，请稍后再试");
+            }
+        }
+
+        /// <summary>
+        /// 根据skuid获取sku基础信息
+        /// </summary>
+        /// <param name="skuId"></param>
+        /// <returns></returns>
+        public async Task<SkuBasicInfo> GetSkuBasikInfoAsId(string skuId)
+        {
+            using (var consulClient = new ConsulClient(a => a.Address = new Uri(_configuration["ConsulAddress"])))
+            {
+                var services = consulClient.Catalog.Service("microservice_product_grpc").Result.Response;
+                if (services != null && services.Any())
+                {
+                    var service = services.ElementAt(new Random().Next(services.Count()));
+
+                    using var channel = GrpcChannel.ForAddress($"http://{service.ServiceAddress}:{service.ServicePort}/");
+                    var client = new SkuInfoGrpc.SkuInfoGrpcClient(channel);
+                    
+                    return _mapper.Map<SkuBasicInfo>(await client.GetSkuBasikInfoAsIdAsync(new GetSkuBasikInfoAsIdRequest { SkuId = skuId }));
+                }
+
+                return null;
             }
         }
     }

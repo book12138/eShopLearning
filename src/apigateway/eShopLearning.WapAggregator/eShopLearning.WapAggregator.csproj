@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="gRPC\Protos\skuinfo.proto" />
+    <None Remove="ApplicationGrpcRemoteServices\Protos\skuinfo.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="gRPC\Protos\skuinfo.proto" />
+    <Protobuf Include="ApplicationGrpcRemoteServices\Protos\skuinfo.proto" />
   </ItemGroup>
 
   <ItemGroup>

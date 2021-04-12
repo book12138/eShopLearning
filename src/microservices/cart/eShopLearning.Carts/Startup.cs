@@ -82,9 +82,9 @@ namespace eShopLearning.Carts
                             AuthorizationUrl = new Uri($"{Configuration.GetValue<string>("IdentityAuthServerUrl")}/connect/authorize"),
                             TokenUrl = new Uri($"{Configuration.GetValue<string>("IdentityAuthServerUrl")}/connect/token"),
                             Scopes = new Dictionary<string, string>()
-                             {
+                            {
                                  { "cartapi", "cart service api" }
-                             }
+                            }
                         }
                     }
                 });
