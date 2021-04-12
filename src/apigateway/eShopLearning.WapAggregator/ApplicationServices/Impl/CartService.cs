@@ -31,7 +31,7 @@ namespace eShopLearning.WapAggregator.ApplicationServices.Impl
         /// <returns></returns>
         public async Task<ResponseModel<IEnumerable<UserCartProductDto>>> GetUserCartAllProduct(long userId)
         {
-
+            return null;
         }
     }
 }

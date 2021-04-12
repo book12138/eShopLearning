@@ -17,6 +17,6 @@ namespace eShopLearning.WapAggregator.ApplicationServices
         /// <param name="size">每页显示的数量</param>
         /// <returns></returns>
         IAsyncEnumerable<ResponseModel<SearchViewModel>> Search(string keyword, int page, int size);
-        Task<>
+        
     }
 }

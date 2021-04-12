@@ -11,7 +11,7 @@
     <None Remove="EFCoreRepositories\EFCore\skuattrseeddata.csv" />
     <None Remove="EFCoreRepositories\EFCore\skuseeddata.csv" />
     <None Remove="EFCoreRepositories\EFCore\spuseeddata.csv" />
-    <None Remove="gRPC\Protos\skuinfo.proto" />
+    <None Remove="ApplicationGrpcRemoteServices\Protos\skuinfo.proto" />
   </ItemGroup>
   
   <ItemGroup>
@@ -68,7 +68,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="gRPC\Protos\skuinfo.proto" />
+    <Protobuf Include="ApplicationGrpcRemoteServices\Protos\skuinfo.proto" />
   </ItemGroup>
 
 </Project>

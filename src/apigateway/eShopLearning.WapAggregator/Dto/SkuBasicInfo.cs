@@ -23,6 +23,10 @@ namespace eShopLearning.WapAggregator.Dto
         /// </summary>
         public decimal Price { get; set; }
         /// <summary>
+        /// 当前库存
+        /// </summary>
+        public int Inventory { get; set; }
+        /// <summary>
         /// sku 属性集
         /// </summary>
         public string[] SkuAttrs { get; set; }        

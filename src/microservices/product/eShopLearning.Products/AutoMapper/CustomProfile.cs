@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
 using eShopLearning.Products.Dto;
 using eShopLearning.Products.EFCoreRepositories.Entities;
-using eShopLearning.Products.gRPC.Protos;
-using System;
-using System.Collections.Generic;
+using eShopLearning.Products.ApplicationGrpcRemoteServices.Protos;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace eShopLearning.Products.AutoMapper
 {
@@ -26,6 +23,8 @@ namespace eShopLearning.Products.AutoMapper
                 .ForMember(dest => dest.SpuId, opt => opt.MapFrom(src => long.Parse(src.SpuId)));
             CreateMap<EsSkuDto, SearchReply>()
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(src => float.Parse(src.Price.ToString())));
+            CreateMap<Sku, GetSkuBasikInfoAsIdReply>()
+                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.RotatePictures.IndexOf(',') < 0 ? src.RotatePictures : src.RotatePictures.Substring(0, src.RotatePictures.IndexOf(','))));
         }
 
         /// <summary>
