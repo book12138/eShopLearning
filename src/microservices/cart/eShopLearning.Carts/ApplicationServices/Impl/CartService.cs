@@ -119,7 +119,27 @@ namespace eShopLearning.Carts.ApplicationServices.Impl
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<ResponseModel<IEnumerable<UserCartProductDto>>> GetUserCartAllProduct(long userId)
-            => new ResponseModel<IEnumerable<UserCartProductDto>> { Code = 200, Data = await _eShopCartDbContext.Carts.Where(u => u.UserId == userId).Select(u => new UserCartProductDto { SkuId = u.SkuId, Quantity = u.Quantity, CartRecordId = u.Id }).ToListAsync() };
+        public async Task<IEnumerable<UserCartProductDto>> GetUserCartAllProduct(long userId)
+            => await _eShopCartDbContext.Carts
+                .Where(u => u.UserId == userId)
+                .OrderByDescending(u => u.AddTime)
+                .Select(u => new UserCartProductDto { SkuId = u.SkuId, Quantity = u.Quantity, CartRecordId = u.Id })
+                .ToListAsync();
+
+        /// <summary>
+        /// 获取用户购物车中的商品
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="page"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<UserCartProductDto>> GetUserCartProduct(long userId, int page, int size)
+             => await _eShopCartDbContext.Carts
+                .Where(u => u.UserId == userId)
+                .OrderByDescending(u => u.AddTime)
+                .Select(u => new UserCartProductDto { SkuId = u.SkuId, Quantity = u.Quantity, CartRecordId = u.Id })
+                .Skip((page - 1) * size)
+                .Take(size)
+                .ToListAsync();
     }
 }

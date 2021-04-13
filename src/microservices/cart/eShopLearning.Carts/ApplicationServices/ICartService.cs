@@ -48,6 +48,14 @@ namespace eShopLearning.Carts.ApplicationServices
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<ResponseModel<IEnumerable<UserCartProductDto>>> GetUserCartAllProduct(long userId);
+        Task<IEnumerable<UserCartProductDto>> GetUserCartAllProduct(long userId);
+        /// <summary>
+        /// 获取用户购物车中的商品
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="page"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        Task<IEnumerable<UserCartProductDto>> GetUserCartProduct(long userId, int page, int size);
     }
 }

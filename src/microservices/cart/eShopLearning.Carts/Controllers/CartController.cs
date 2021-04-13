@@ -79,13 +79,5 @@ namespace eShopLearning.Carts.Controllers
         [HttpDelete("RemoveAllProduct/{userId}")]
         public async Task<ResponseModel> RemoveAllProduct(long userId)
             => await _cartService.RemoveAllProduct(userId);
-
-        /// <summary>
-        /// 获取用户购物车中的所有商品
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("GetUserCartAllProduct/{userId}")]
-        public async Task<ResponseModel<IEnumerable<UserCartProductDto>>> GetUserCartAllProduct(long userId)
-            => await _cartService.GetUserCartAllProduct(userId);
     }
 }
