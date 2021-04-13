@@ -36,6 +36,7 @@ namespace IdentityServer4Demo
                 new ApiScope("productapi"),
                 new ApiScope("userapi"),
                 new ApiScope("cartapi"),
+                new ApiScope("cartproductaggapi")
             };
         }
 
@@ -56,7 +57,7 @@ namespace IdentityServer4Demo
                 new ApiResource("eshopApis", "eShop apis")
                 {
                     ApiSecrets = { new Secret("secret".Sha256()) },
-                    Scopes = { "eshophttpapigateway" , "productapi", "userapi", "cartapi" }
+                    Scopes = { "eshophttpapigateway" , "productapi", "userapi", "cartapi", "cartproductaggapi" }
                 }
             };
         }
@@ -170,6 +171,17 @@ namespace IdentityServer4Demo
                     RedirectUris = { $"{clientUrls["productserviceswaggerui"]}/swagger/oauth2-redirect.html" },
                     PostLogoutRedirectUris = { $"{clientUrls["productserviceswaggerui"]}/swagger/" },
                     AllowedScopes = { "productapi" }
+                },
+                // Product Microservice Swagger UI
+                new Client
+                {
+                    ClientId = "cartproductaggswaggerui",
+                    ClientName = "Cart Product Aggregator Microservice Swagger UI",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
+                    RedirectUris = { $"{clientUrls["cartproductaggswaggerui"]}/swagger/oauth2-redirect.html" },
+                    PostLogoutRedirectUris = { $"{clientUrls["cartproductaggswaggerui"]}/swagger/" },
+                    AllowedScopes = { "cartproductaggapi" }
                 },
             };
         }

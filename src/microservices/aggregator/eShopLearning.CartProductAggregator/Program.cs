@@ -35,7 +35,7 @@ Log.Logger = CreateSerilogLogger(configuration);
 IWebHost BuildWebHost(IConfiguration configuration, string[] args) =>
     WebHost.CreateDefaultBuilder(args)
         .CaptureStartupErrors(false)
-        .ConfigureAppConfiguration(x => x.AddConfiguration(configuration).AddJsonFile("ocelot_router.json")) // 将 ocelot 的路由配置添加到configuration中
+        .ConfigureAppConfiguration(x => x.AddConfiguration(configuration))
         .UseStartup<Startup>()
         .UseContentRoot(Directory.GetCurrentDirectory())
         .UseSerilog()

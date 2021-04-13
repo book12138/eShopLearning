@@ -23,4 +23,8 @@
 	  <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\tool\eShopLearning.Common\eShopLearning.Common.csproj" />
+  </ItemGroup>
+
 </Project>

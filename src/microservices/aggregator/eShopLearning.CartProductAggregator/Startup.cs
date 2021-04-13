@@ -56,11 +56,11 @@ namespace eShopLearning.CartProductAggregator
             #region swagger
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("eshopHttpAggDoc", new OpenApiInfo
+                options.SwaggerDoc("cartProductAggDoc", new OpenApiInfo
                 {
-                    Title = "Shopping Aggregator for Uniapp Clients",
+                    Title = "Cart Product Aggregator Api Service",
                     Version = "v1",
-                    Description = "Shopping Aggregator for Uniapp Clients"
+                    Description = "Cart Product Aggregator Api Service"
                 });
 
                 options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
