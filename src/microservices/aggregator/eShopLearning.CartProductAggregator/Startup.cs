@@ -1,3 +1,5 @@
+using eShopLearning.CartProductAggregator.ApplicationServices;
+using eShopLearning.CartProductAggregator.ApplicationServices.Impl;
 using eShopLearning.CartProductAggregator.AutoMapper;
 using eShopLearning.Common.Extension.AspNetCoreFilter;
 using Microsoft.AspNetCore.Builder;
@@ -119,6 +121,7 @@ namespace eShopLearning.CartProductAggregator
             #endregion
 
             services.AddAutoMapper(typeof(CustomProfile)); // automapper
+            services.AddScoped<ICartProductService, CartProductService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

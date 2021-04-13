@@ -1,0 +1,19 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "eShopLearning.CartProductAggregator.ApplicationGrpcRemoteServices.Protos";
+
+service SkuInfoGrpc{
+	rpc GetSkuBasikInfoAsId(GetSkuBasikInfoAsIdRequest) returns (GetSkuBasikInfoAsIdReply);
+}
+
+/** GetSkuBasikInfoAsId **/
+message GetSkuBasikInfoAsIdRequest{
+	string skuId = 1;
+}
+message GetSkuBasikInfoAsIdReply{
+	string title = 1;
+	float price = 2;
+	int32 inventory = 3;
+	string image = 4;
+	string skuAttrs = 5;
+}

@@ -1,0 +1,30 @@
+﻿
+namespace eShopLearning.CartProductAggregator.Dto
+{
+    /// <summary>
+    /// sku 基础信息
+    /// </summary>
+    public class SkuBasicInfo
+    {
+        /// <summary>
+        /// 标题
+        /// </summary>
+        public string Title { get; set; }
+        /// <summary>
+        /// 主图
+        /// </summary>
+        public string Image { get; set; }
+        /// <summary>
+        /// 价格
+        /// </summary>
+        public decimal Price { get; set; }
+        /// <summary>
+        /// 当前库存
+        /// </summary>
+        public int Inventory { get; set; }
+        /// <summary>
+        /// sku 属性集
+        /// </summary>
+        public string[] SkuAttrs { get; set; }        
+    }
+}

@@ -1,0 +1,30 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "eShopLearning.CartProductAggregator.ApplicationGrpcRemoteServices.Protos";
+
+service CartProductGrpc{
+	rpc GetUserCartAllProduct(GetUserCartAllProductRequest) returns (stream GetUserCartAllProductReply);
+	rpc GetUserCartProduct(GetUserCartProductRequest) returns (stream GetUserCartProductReply);
+}
+
+/** GetUserCartAllProduct **/
+message GetUserCartAllProductRequest{
+	string userId=1;
+}
+message GetUserCartAllProductReply{
+	string cartRecordId=1;
+	string skuId=2;
+	int32 quantity=3;
+}
+
+/** GetUserCartProduct **/
+message GetUserCartProductRequest{
+	string userId=1;
+	int32 page=2;
+	int32 size=3;
+}
+message GetUserCartProductReply{
+	string cartRecordId=1;
+	string skuId=2;
+	int32 quantity=3;
+}

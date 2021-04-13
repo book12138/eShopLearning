@@ -5,6 +5,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="ApplicationGrpcRemoteServices\Protos\cartProduct.proto" />
+	  <None Remove="ApplicationGrpcRemoteServices\Protos\skuinfo.proto" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.4" />
 		<PackageReference Include="AutoMapper" Version="10.1.1" />
@@ -27,6 +32,11 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\tool\eShopLearning.Common\eShopLearning.Common.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Protobuf Include="ApplicationGrpcRemoteServices\Protos\cartProduct.proto" />
+	  <Protobuf Include="ApplicationGrpcRemoteServices\Protos\skuinfo.proto" />
 	</ItemGroup>
 
 </Project>
