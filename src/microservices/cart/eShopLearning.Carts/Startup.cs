@@ -1,3 +1,4 @@
+using eShopLearning.Carts.ApplicationGrpcRemoteServices;
 using eShopLearning.Carts.ApplicationServices;
 using eShopLearning.Carts.ApplicationServices.Impl;
 using eShopLearning.Carts.AutoMapper;
@@ -106,8 +107,11 @@ namespace eShopLearning.Carts
 
             #region consul
             services.AddConsul(Configuration["ConsulAddress"])
-           .AddHttpHealthCheck("http://localhost:3356/api/Health/Check", 5, 10)
-           .RegisterService("microservice_carts", "localhost", 3356, new string[0]);
+               .AddHttpHealthCheck("http://localhost:3356/api/Health/Check", 5, 10)
+               .RegisterService("microservice_carts", "localhost", 3356, new string[0]);
+            services.AddConsul(Configuration["ConsulAddress"])
+               .AddGRPCHealthCheck("localhost:8289")
+               .RegisterService("microservice_carts_grpc", "localhost", 8289, new string[0]);
             #endregion
 
             #region authentication
@@ -178,6 +182,9 @@ namespace eShopLearning.Carts
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                /* gRPC */
+                endpoints.MapGrpcService<CartProductGrpcService>();
+                endpoints.MapGrpcService<HealthCheckGrpcService>();
             });
         }
     }
