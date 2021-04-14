@@ -1,11 +1,6 @@
 using eShopLearning.Common.Extension.AspNetCoreFilter;
-using eShopLearning.Common.HttpServices.HttpMessageHandler;
-using eShopLearning.WapAggregator.ApplicationServices;
-using eShopLearning.WapAggregator.ApplicationServices.Impl;
-using eShopLearning.Products.AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -56,8 +51,6 @@ namespace eShopLearning.WapAggregator
                 });
             #endregion
 
-            services.AddOptions();
-
             #region swagger
             services.AddSwaggerGen(options =>
             {
@@ -80,9 +73,9 @@ namespace eShopLearning.WapAggregator
                              Scopes = new Dictionary<string, string>()
                              {
                                  { "eshophttpapigateway", "api gateway" },
-                                 { "productapi", "product service api" },
-                                 { "userapi", "user service api" },
-                                 { "cartapi", "cart service api" }
+                                 //{ "productapi", "product service api" },
+                                 //{ "userapi", "user service api" },
+                                 //{ "cartapi", "cart service api" }
                              }
                          }
                     }
@@ -91,8 +84,6 @@ namespace eShopLearning.WapAggregator
                 options.OperationFilter<AuthorizeCheckOperationFilter>();
             });
             #endregion
-
-            services.AddAutoMapper(typeof(CustomProfile)); // automapper
 
             #region authentication
             var identityUrl = Configuration.GetValue<string>("IdentityAuthServerUrl");
@@ -120,15 +111,6 @@ namespace eShopLearning.WapAggregator
             });
             #endregion
 
-            #region http services
-            services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
-            services.AddHttpClient<ICartService, CartService>()
-              .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddHttpClient<IProductService, ProductService>()
-                .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
-            #endregion
-
             services.AddOcelot().AddConsul();
         }
 
@@ -154,7 +136,7 @@ namespace eShopLearning.WapAggregator
 
             app.UseHttpsRedirection();
 
-            //app.UseOcelot().Wait();
+            app.UseOcelot().Wait();
 
             app.UseRouting();
             app.UseAuthentication();
