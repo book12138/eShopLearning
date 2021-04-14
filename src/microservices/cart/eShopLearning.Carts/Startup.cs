@@ -141,6 +141,8 @@ namespace eShopLearning.Carts
             #endregion
 
             services.AddAutoMapper(typeof(CustomProfile)); // automapper
+            services.AddGrpc(); // gRPC
+
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<ICartRepository, CartRepository>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

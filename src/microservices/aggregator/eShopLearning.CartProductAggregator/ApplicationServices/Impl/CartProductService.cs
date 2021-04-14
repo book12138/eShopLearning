@@ -56,7 +56,7 @@ namespace eShopLearning.CartProductAggregator.ApplicationServices.Impl
             using (var consulClient = new ConsulClient(a => a.Address = new Uri(_configuration["ConsulAddress"])))
             {
                 var cartServices = consulClient.Catalog.Service("microservice_carts_grpc").Result.Response;
-                var productServices = consulClient.Catalog.Service("microservice_products_grpc").Result.Response;
+                var productServices = consulClient.Catalog.Service("microservice_product_grpc").Result.Response;
                 if (cartServices != null && cartServices.Any()
                     && productServices != null && productServices.Any())
                 {
@@ -95,7 +95,7 @@ namespace eShopLearning.CartProductAggregator.ApplicationServices.Impl
             using (var consulClient = new ConsulClient(a => a.Address = new Uri(_configuration["ConsulAddress"])))
             {
                 var cartServices = consulClient.Catalog.Service("microservice_carts_grpc").Result.Response;
-                var productServices = consulClient.Catalog.Service("microservice_products_grpc").Result.Response;
+                var productServices = consulClient.Catalog.Service("microservice_product_grpc").Result.Response;
                 if (cartServices != null && cartServices.Any()
                     && productServices != null && productServices.Any())
                 {

@@ -78,7 +78,8 @@ namespace eShopLearning.CartProductAggregator
                             TokenUrl = new Uri($"{Configuration.GetValue<string>("IdentityAuthServerUrl")}/connect/token"),
                             Scopes = new Dictionary<string, string>()
                              {
-                                 { "cartproductaggapi", "cart product aggregator api" }
+                                 { "cartproductaggapi", "cart product aggregator api" },
+                                 { "cartapi", "cart service api" }
                              }
                         }
                     }
@@ -110,6 +111,7 @@ namespace eShopLearning.CartProductAggregator
                 {
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim("scope", "cartproductaggapi");
+                    policy.RequireClaim("scope", "cartapi");
                 });
             });
             #endregion

@@ -5,12 +5,13 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace eShopLearning.Common.Extension.AspNetCoreFilter
 {
@@ -26,14 +27,15 @@ namespace eShopLearning.Common.Extension.AspNetCoreFilter
         /// <summary>
         /// 定义不要打日志的接口集合
         /// </summary>
-        private static HashSet<string> _doNotLogApis = new HashSet<string>(new []{
+        private static HashSet<string> _doNotLogApis = new HashSet<string>(new[]{
             "/Health/Check"
         });
         /// <summary>
         /// 定义不要对响应内容打日志的接口集合
         /// </summary>
         private static HashSet<string> _doNotLogResponseContentApis = new HashSet<string>(new[]{
-            "/Product/Search"
+            "/Product/Search",
+            "/CartProduct/GetUserCartProducts"
         });
 
         /// <summary>
@@ -47,12 +49,12 @@ namespace eShopLearning.Common.Extension.AspNetCoreFilter
         /// </summary>
         /// <param name="context"></param>
         public override void OnActionExecuting(ActionExecutingContext context)
-        {           
+        {
             foreach (var item in context.ActionArguments)
             {
                 var jsonStr = JsonConvert.SerializeObject(item.Value);
                 var newJsonStr = Regex.Replace(jsonStr, "(\"\\s+)|(\\s+\")", "\""); // 去掉字符串类型参数前后空格
-                
+
                 if (jsonStr.Length != newJsonStr.Length) // 检查参数字符串在去除掉了空格之后，是否和原来的不一样
                 {
                     object newValueObj = null;
@@ -67,7 +69,7 @@ namespace eShopLearning.Common.Extension.AspNetCoreFilter
                         var field = type.GetField($"<{prop.Name}>k__BackingField", BindingFlags.Instance | BindingFlags.NonPublic);
                         field?.SetValue(item.Value, prop.GetValue(newValueObj));
                     }
-                    
+
                 }
             }
 
@@ -109,7 +111,7 @@ namespace eShopLearning.Common.Extension.AspNetCoreFilter
                     "【当前响应接口】：{responsePath} \r\n" +
                     "【接口返回内容】： {response}", context.HttpContext.Request.Path, "{ 系统内部已被设置为不显示 }");
 
-            base.OnActionExecuted(context); 
+            base.OnActionExecuted(context);
         }
     }
 }

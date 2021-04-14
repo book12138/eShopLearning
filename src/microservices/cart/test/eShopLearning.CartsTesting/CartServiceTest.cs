@@ -120,9 +120,8 @@ namespace eShopLearning.CartsTesting
         {
             var result = await _cartService.GetUserCartAllProduct(1);
             result.Should().NotBeNull();
-            result.Code.Should().Be(200);
-            result.Data.Should().NotBeNull();
-            result.Data.Count().Should().Be(1);
+            result.Should().NotBeNull();
+            result.Count().Should().Be(1);
         }
     }
 }

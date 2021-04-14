@@ -181,7 +181,7 @@ namespace IdentityServer4Demo
                     AllowAccessTokensViaBrowser = true,
                     RedirectUris = { $"{clientUrls["cartproductaggswaggerui"]}/swagger/oauth2-redirect.html" },
                     PostLogoutRedirectUris = { $"{clientUrls["cartproductaggswaggerui"]}/swagger/" },
-                    AllowedScopes = { "cartproductaggapi" }
+                    AllowedScopes = { "cartproductaggapi", "cartapi" }
                 },
             };
         }
