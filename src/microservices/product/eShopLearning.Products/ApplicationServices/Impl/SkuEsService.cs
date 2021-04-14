@@ -95,6 +95,7 @@ namespace eShopLearning.Products.ApplicationServices.Impl
         /// <returns></returns>
         public async Task<IEnumerable<EsSkuDto>> Search(string keyword, int page, int size)
         {
+            _logger.LogInformation("本次搜索的关键字词是：{keyword}", keyword);
             if (string.IsNullOrEmpty(keyword))
                 return new List<EsSkuDto>();
 

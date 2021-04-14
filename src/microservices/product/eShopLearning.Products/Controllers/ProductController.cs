@@ -89,8 +89,15 @@ namespace eShopLearning.Products.Controllers
         /// <param name="size"></param>
         /// <returns></returns>
         [HttpGet("Search/{keyword}/{page}/{size}")]
-        public async Task<IEnumerable<EsSkuDto>> Search(string keyword, int page, int size)
-            => await _skuEsService.Search(keyword, page, size);
+        public async IAsyncEnumerable<ResponseModel<EsSkuDto>> Search(string keyword, int page, int size)
+        {
+            var searchResult = await _skuEsService.Search(keyword, page, size);
+            if (searchResult is null || searchResult.Count() is 0)
+                yield return ResponseModel<EsSkuDto>.BuildResponse(PublicStatusCode.Fail, "没有搜索到数据");
+
+            foreach (var item in searchResult)
+                yield return ResponseModel<EsSkuDto>.BuildResponse(PublicStatusCode.Success, item);
+        }
 
         /// <summary>
         /// 将库中的所有sku数据添加到es
