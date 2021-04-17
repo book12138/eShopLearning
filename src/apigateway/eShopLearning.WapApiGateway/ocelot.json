@@ -1,0 +1,22 @@
+﻿{
+  "Routes": [   
+    {
+      // Upstream表示上游请求，即客户端请求到API Gateway的请求
+      "UpstreamPathTemplate": "/v1/WapApiGateway/Product/{url}",
+      "DownstreamPathTemplate": "/api/Product/{url}",
+      "DownstreamScheme": "http",
+      "ServiceName": "microservice_product",
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      },
+      "UpstreamHttpMethod": [ "Get" ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:4865",
+    "ServiceDiscoveryProvider": { // consul 
+      "Host": "localhost",
+      "Port": 8500
+    }
+  }
+}

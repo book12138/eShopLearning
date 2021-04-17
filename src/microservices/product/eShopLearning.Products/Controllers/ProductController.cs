@@ -92,7 +92,7 @@ namespace eShopLearning.Products.Controllers
         public async IAsyncEnumerable<ResponseModel<EsSkuDto>> Search(string keyword, int page, int size)
         {
             var searchResult = await _skuEsService.Search(keyword, page, size);
-            if (searchResult is null || searchResult.Count() is 0)
+            if (searchResult is null || searchResult.Any() is false)
                 yield return ResponseModel<EsSkuDto>.BuildResponse(PublicStatusCode.Fail, "没有搜索到数据");
 
             foreach (var item in searchResult)
