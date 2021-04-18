@@ -14,7 +14,7 @@ namespace eShopLearning.CartProductAggregator.ApplicationServices
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        IAsyncEnumerable<ResponseModel<UserCartProductDto>> GetUserCartAllProduct(long userId);
+        Task<ResponseModel<IEnumerable<UserCartProductDto>>> GetUserCartProduct(long userId);
         /// <summary>
         /// 获取用户购物车中的商品
         /// </summary>
@@ -22,6 +22,6 @@ namespace eShopLearning.CartProductAggregator.ApplicationServices
         /// <param name="page"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        IAsyncEnumerable<ResponseModel<UserCartProductDto>> GetUserCartProduct(long userId, int page, int size);
+        Task<ResponseModel<IEnumerable<UserCartProductDto>>> GetUserCartProduct(long userId, int page, int size);
     }
 }

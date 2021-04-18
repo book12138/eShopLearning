@@ -1,3 +1,4 @@
+using Consul;
 using eShopLearning.CartProductAggregator.ApplicationServices;
 using eShopLearning.CartProductAggregator.ApplicationServices.Impl;
 using eShopLearning.CartProductAggregator.AutoMapper;
@@ -15,6 +16,9 @@ using Microsoft.OpenApi.Models;
 using NConsul.AspNetCore;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using Polly;
+using Polly.CircuitBreaker;
+using Polly.Timeout;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -120,10 +124,19 @@ namespace eShopLearning.CartProductAggregator
             services.AddConsul(Configuration["ConsulAddress"])
                .AddHttpHealthCheck("http://localhost:3356/api/Health/Check", 5, 10)
                .RegisterService("microservice_carts", "localhost", 3356, new string[0]);
+
+            services.AddScoped<IConsulClient, ConsulClient>(u => new ConsulClient(a => a.Address = new Uri(Configuration["ConsulAddress"])));
+            #endregion
+
+            #region polly
+            // 定义全局默认的超时策略规则
+            services.AddSingleton<ITimeoutPolicy, TimeoutPolicy>(u => Polly.Policy.Timeout(5, TimeoutStrategy.Pessimistic));
+            // 定义全局默认的熔断策略
+            services.AddSingleton<ICircuitBreakerPolicy, CircuitBreakerPolicy>(u => Polly.Policy.Handle<Exception>().CircuitBreaker(3, TimeSpan.FromSeconds(3)));
             #endregion
 
             services.AddAutoMapper(typeof(CustomProfile)); // automapper
-            services.AddScoped<ICartProductService, CartProductService>();
+            services.AddScoped<ICartProductService, CartProductService>();           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

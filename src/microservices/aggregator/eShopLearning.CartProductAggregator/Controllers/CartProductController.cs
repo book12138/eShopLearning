@@ -27,11 +27,8 @@ namespace eShopLearning.CartProductAggregator.Controllers
         [HttpGet("GetUserCartProducts/{userId}")]
 #endif
         [Authorize]
-        public async IAsyncEnumerable<ResponseModel<UserCartProductDto>> GetUserCartProducts(long userId)
-        {
-            await foreach (var item in _cartProductService.GetUserCartAllProduct(userId))
-                yield return item;
-        }
+        public async Task<ResponseModel<IEnumerable<UserCartProductDto>>> GetUserCartProducts(long userId)
+            => await _cartProductService.GetUserCartProduct(userId);
 
         /// <summary>
         /// 获取用户购物车中的商品
@@ -41,10 +38,7 @@ namespace eShopLearning.CartProductAggregator.Controllers
         [HttpGet("GetUserCartProducts/{userId}/{page}/{size}")]
 #endif
         [Authorize]
-        public async IAsyncEnumerable<ResponseModel<UserCartProductDto>> GetUserCartProducts(long userId, int page, int size)
-        {
-            await foreach (var item in _cartProductService.GetUserCartProduct(userId, page, size))
-                yield return item;
-        }
+        public async Task<ResponseModel<IEnumerable<UserCartProductDto>>> GetUserCartProducts(long userId, int page, int size)
+            => await _cartProductService.GetUserCartProduct(userId, page, size);
     }
 }

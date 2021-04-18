@@ -4,6 +4,7 @@ using eShopLearning.Carts.ApplicationServices;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using NConsul;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace eShopLearning.Carts.ApplicationGrpcRemoteServices
@@ -51,6 +52,7 @@ namespace eShopLearning.Carts.ApplicationGrpcRemoteServices
         {
             _logger.LogInformation("购物车grpc服务收到请求，需要查询用户id为{id}的购物车中的商品", request.UserId);
             var temp = await _cartService.GetUserCartAllProduct(long.TryParse(request.UserId, out long parseResult) ? parseResult : 0);
+            _logger.LogInformation("用户{id}的购物车中共有{count}条记录", request.UserId, temp.Count());
             foreach (var item in temp)
                 await responseStream.WriteAsync(_mapper.Map<GetUserCartAllProductReply>(item));
         }
@@ -64,11 +66,13 @@ namespace eShopLearning.Carts.ApplicationGrpcRemoteServices
         /// <returns></returns>
         public override async Task GetUserCartProduct(GetUserCartProductRequest request, IServerStreamWriter<GetUserCartProductReply> responseStream, ServerCallContext context)
         {
-            _logger.LogInformation("购物车grpc服务收到请求，需要查询用户id为{id}的购物车中的商品", request.UserId);
+            _logger.LogInformation("购物车grpc服务收到请求，需要查询用户id为{id}的购物车中的第{page}页的商品", request.UserId, request.Page);
             var temp = await _cartService.GetUserCartProduct(
                 long.TryParse(request.UserId, out long parseResult) ? parseResult : 0,
                 request.Page,
                 request.Size);
+
+            _logger.LogInformation("用户{id}的第{page}页购物车数据中共查询到{count}条数据", request.UserId, request.Page, temp.Count());
             foreach (var item in temp)
                 await responseStream.WriteAsync(_mapper.Map<GetUserCartProductReply>(item));
         }
