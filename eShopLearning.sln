@@ -57,7 +57,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "aggregator", "aggregator", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.CartProductAggregator", "src\microservices\aggregator\eShopLearning.CartProductAggregator\eShopLearning.CartProductAggregator.csproj", "{7582CC39-E1CE-4B00-B64B-4E7487A4C31B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopLearning.WapApiGateway", "src\apigateway\eShopLearning.WapApiGateway\eShopLearning.WapApiGateway.csproj", "{55C302F5-97E1-4D8B-BBA7-EFD4EB53AF3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.WapApiGateway", "src\apigateway\eShopLearning.WapApiGateway\eShopLearning.WapApiGateway.csproj", "{55C302F5-97E1-4D8B-BBA7-EFD4EB53AF3E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopLearning.MobileAuthServer", "src\authServer\eShopLearning.MobileAuthServer\eShopLearning.MobileAuthServer.csproj", "{CE7645B4-C1F7-4BD0-A24C-BBAD31485221}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -121,6 +123,10 @@ Global
 		{55C302F5-97E1-4D8B-BBA7-EFD4EB53AF3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55C302F5-97E1-4D8B-BBA7-EFD4EB53AF3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55C302F5-97E1-4D8B-BBA7-EFD4EB53AF3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE7645B4-C1F7-4BD0-A24C-BBAD31485221}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE7645B4-C1F7-4BD0-A24C-BBAD31485221}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE7645B4-C1F7-4BD0-A24C-BBAD31485221}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE7645B4-C1F7-4BD0-A24C-BBAD31485221}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -152,6 +158,7 @@ Global
 		{60A8A695-4F89-4846-9A98-571C8C04BCB8} = {C018CA05-9E04-462F-A325-FAE2D5F74634}
 		{7582CC39-E1CE-4B00-B64B-4E7487A4C31B} = {60A8A695-4F89-4846-9A98-571C8C04BCB8}
 		{55C302F5-97E1-4D8B-BBA7-EFD4EB53AF3E} = {5E70F8A2-AF32-4FD8-8CDE-A278C5289333}
+		{CE7645B4-C1F7-4BD0-A24C-BBAD31485221} = {FB900D6B-6969-4371-8877-6AB61A48A154}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D3249233-9B00-40A3-8B8E-4566F8A13CBD}

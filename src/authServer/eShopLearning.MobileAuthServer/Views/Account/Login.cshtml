@@ -1,0 +1,39 @@
+﻿@model eShopLearning.MobileAuthServer.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container d-flex justify-content-center">
+    <div class="d-flex flex-column justify-content-between">
+        <div class="card mt-3 p-5">
+            <div class="logo mb-3"><img src="https://imgur.com/zydrQCr.png"></div>
+            <div>
+                <p class="mb-1">Start managing your</p>
+                <h4 class="mb-5 text-white">money with us!</h4>
+            </div> <a class="btn btn-primary btn-lg" asp-controller="Account" asp-action="Register"><small>You don't have an account?</small><span>&nbsp;signed up</span> </a>
+        </div>
+        <div class="card two bg-white px-5 py-4 mb-3">
+            <form asp-action="Login">
+                <div class="form-group">
+                    <input asp-for="Username" class="form-control" >
+                    <label asp-for="Username" class="form-control-placeholder">Username</label>
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="Password" type="password" class="form-control" >
+                    <label asp-for="Password" class="form-control-placeholder">Password</label>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block btn-lg mt-1 mb-2">
+                    <span>Get started<i class="fas fa-long-arrow-alt-right ml-2"></i></span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
