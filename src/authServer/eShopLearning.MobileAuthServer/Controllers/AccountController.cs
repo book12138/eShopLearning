@@ -1,4 +1,8 @@
-﻿using eShopLearning.MobileAuthServer.Models;
+﻿using AutoMapper.Configuration;
+using eShopLearning.MobileAuthServer.Models;
+using IdentityServer4.Services;
+using IdentityServer4.Stores;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,10 +15,26 @@ namespace eShopLearning.MobileAuthServer.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly ILogger<AccountController> _logger;
+        private readonly IIdentityServerInteractionService _interaction;
+        private readonly IClientStore _clientStore;
+        private readonly IAuthenticationSchemeProvider _schemeProvider;
+        private readonly IEventService _events;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger _logger;
 
-        public AccountController(ILogger<AccountController> logger)
+        public AccountController(
+            IIdentityServerInteractionService interaction,
+            IClientStore clientStore,
+            IAuthenticationSchemeProvider schemeProvider,
+            IEventService events,
+            IConfiguration configuration,
+            ILogger<AccountController> logger)
         {
+            _interaction = interaction;
+            _clientStore = clientStore;
+            _schemeProvider = schemeProvider;
+            _events = events;
+            _configuration = configuration;
             _logger = logger;
         }
 
@@ -27,7 +47,11 @@ namespace eShopLearning.MobileAuthServer.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login() => View();
+        public IActionResult Login(string returnUrl)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
         [HttpPost]
         public IActionResult Login(LoginViewModel loginViewModel)
         {
