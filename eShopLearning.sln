@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{7D2E53BE-5
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.UsersTesting", "src\microservices\users\test\eShopLearning.UsersTesting\eShopLearning.UsersTesting.csproj", "{E695A4D0-73E3-4A3E-92DC-F2E308012042}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.IdentityAuth", "src\authServer\eShopLearning.IdentityAuth\eShopLearning.IdentityAuth.csproj", "{3A0B76B5-9375-4AB8-8506-13E8AA5EF869}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityAuth", "src\authServer\authDemo\IdentityAuth\IdentityAuth.csproj", "{3A0B76B5-9375-4AB8-8506-13E8AA5EF869}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "authDemo", "authDemo", "{3BE3014B-30D1-425D-8328-FFE733FF1568}"
 EndProject
@@ -59,7 +59,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.CartProductAg
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.WapApiGateway", "src\apigateway\eShopLearning.WapApiGateway\eShopLearning.WapApiGateway.csproj", "{55C302F5-97E1-4D8B-BBA7-EFD4EB53AF3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopLearning.MobileAuthServer", "src\authServer\eShopLearning.MobileAuthServer\eShopLearning.MobileAuthServer.csproj", "{CE7645B4-C1F7-4BD0-A24C-BBAD31485221}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopLearning.MobileAuthServer", "src\authServer\eShopLearning.MobileAuthServer\eShopLearning.MobileAuthServer.csproj", "{CE7645B4-C1F7-4BD0-A24C-BBAD31485221}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -138,7 +138,7 @@ Global
 		{667679A6-B036-4652-A75E-97344B1F0F76} = {EFC0840B-343F-481D-BBA0-6C042349500D}
 		{7D2E53BE-5761-47DB-943E-F351DAE8A819} = {EFC0840B-343F-481D-BBA0-6C042349500D}
 		{E695A4D0-73E3-4A3E-92DC-F2E308012042} = {7D2E53BE-5761-47DB-943E-F351DAE8A819}
-		{3A0B76B5-9375-4AB8-8506-13E8AA5EF869} = {FB900D6B-6969-4371-8877-6AB61A48A154}
+		{3A0B76B5-9375-4AB8-8506-13E8AA5EF869} = {3BE3014B-30D1-425D-8328-FFE733FF1568}
 		{3BE3014B-30D1-425D-8328-FFE733FF1568} = {FB900D6B-6969-4371-8877-6AB61A48A154}
 		{BCBA8330-F340-4F57-8783-7C1C261C9A92} = {3BE3014B-30D1-425D-8328-FFE733FF1568}
 		{80A1BBC8-D933-46A1-B387-5CB513006771} = {3BE3014B-30D1-425D-8328-FFE733FF1568}
