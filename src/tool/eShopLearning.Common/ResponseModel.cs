@@ -121,5 +121,17 @@ namespace eShopLearning.Common
                 Msg = "",
                 Data = data
             };
+        /// <summary>
+        /// 按照状态枚举创建回返报文
+        /// </summary>
+        /// <param name="statusCode"></param>
+        /// <returns></returns>
+        public static ResponseModel<string> BuildResponse(PublicStatusCode statusCode, string msg, string data)
+            => new ResponseModel<string>
+            {
+                Code = (int)statusCode,
+                Msg = msg,
+                Data = data
+            };
     }
 }

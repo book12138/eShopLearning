@@ -53,14 +53,16 @@ namespace eShopLearning.Users.ApplicationServices.Impl
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseModel> UserAdd(UserAddDto dto)
+        public async Task<ResponseModel<string>> UserAdd(UserAddDto dto)
         {
             if (await _applicationUserContext.Users.AnyAsync(u => u.Username.Trim() == dto.Username.Trim())) // 删除的用户，其用户名一样不准被重复
-                return new ResponseModel { Code = 1001, Msg = "此用户名已被注册" };
+                return ResponseModel<string>.BuildResponse(PublicStatusCode.Fail, "用户名已被注册");
 
-            await _userRepository.AddAsync(new User { Username = dto.Username, Password = _bCryptService.HashPassword(dto.Password) });
+            var model = new User { Username = dto.Username, Password = _bCryptService.HashPassword(dto.Password) };
+            await _userRepository.AddAsync(model);
             await _applicationUserContext.SaveChangesAsync();
-            return ResponseModel.BuildResponse(PublicStatusCode.Success);
+            
+            return ResponseModel<string>.BuildResponse(PublicStatusCode.Success, "", model.Id.ToString());
         }
 
         /// <summary>

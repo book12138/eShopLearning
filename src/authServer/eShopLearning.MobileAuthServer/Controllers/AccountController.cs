@@ -66,15 +66,73 @@ namespace eShopLearning.MobileAuthServer.Controllers
         /// <param name="registerViewModel"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Register(RegisterViewModel registerViewModel)
+        public async Task<IActionResult> Register(RegisterViewModel registerViewModel)
         {
             if (registerViewModel.Password?.Trim() != registerViewModel.PasswordAgain?.Trim())
             {
-                ModelState.AddModelError("", "Invalid username or password.");
+                ModelState.AddModelError("", "The two passwords you typed do not match. ");
                 return View(registerViewModel);
             }
 
-            return Content("可以开始注册逻辑");
+            var context = await _interaction.GetAuthorizationContextAsync(registerViewModel.ReturnUrl);
+
+            /* consul */
+            var userServices = _consulClient.Catalog.Service("microservice_users").Result.Response;
+            if (userServices is null || userServices.Any() is false)
+            {
+                ModelState.AddModelError("", "server error");
+                return View(registerViewModel);
+            }
+
+            /* 定义超时与熔断策略 */
+            ISyncPolicy policy = Polly.Policy.Wrap(
+                Polly.Policy.Timeout(10, TimeoutStrategy.Pessimistic),
+                Polly.Policy.Handle<Exception>().CircuitBreaker(3, TimeSpan.FromSeconds(3)));
+
+            var responseContent = await policy.Execute(async () =>
+            {
+                var service = userServices.ElementAt(new Random().Next(userServices.Count()));
+
+                var httpClient = new HttpClient();
+                var req = new { username = registerViewModel.Username, password = registerViewModel.Password };
+                var encodedContent = new StringContent(JsonConvert.SerializeObject(req));
+                encodedContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var response = await httpClient.PostAsync($"http://{service.ServiceAddress}:{service.ServicePort}/api/Account/Register", encodedContent);
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                    throw new Exception("未能正确请求用户服务");
+                return response.Content.ReadAsStringAsync().Result;
+            });
+            ResponseModel<string> userServiceResponse = null;
+            if (!string.IsNullOrEmpty(responseContent))
+                userServiceResponse = JsonConvert.DeserializeObject<ResponseModel<string>>(responseContent);
+
+            /* 对用户服务返回的结果进行下一步逻辑处理 */
+            if (userServiceResponse is not null && userServiceResponse.Code is (int)PublicStatusCode.Success)
+            {
+                await _events.RaiseAsync(new UserLoginSuccessEvent(registerViewModel.Username, userServiceResponse.Data, registerViewModel.Username, clientId: context?.Client.ClientId));
+
+                var props = new AuthenticationProperties
+                {
+                    IsPersistent = true,
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30),
+                    AllowRefresh = true,
+                    RedirectUri = registerViewModel.ReturnUrl
+                };
+                var isuser = new IdentityServerUser(userServiceResponse.Data)
+                {
+                    DisplayName = registerViewModel.Username
+                };
+
+                await HttpContext.SignInAsync(isuser, props); // 颁发 token   using Microsoft.AspNetCore.Http;
+
+                if (_interaction.IsValidReturnUrl(registerViewModel.ReturnUrl))
+                    return Redirect(registerViewModel.ReturnUrl);
+
+                return RedirectToAction(nameof(Default));
+            }
+
+            ModelState.AddModelError("", userServiceResponse.Msg);
+            return View(registerViewModel);
         }
 
         /// <summary>

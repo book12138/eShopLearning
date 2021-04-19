@@ -11,7 +11,7 @@ namespace eShopLearning.Users.ApplicationServices
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<ResponseModel> UserAdd(UserAddDto dto);
+        Task<ResponseModel<string>> UserAdd(UserAddDto dto);
         /// <summary>
         /// 密码核对并在确认核对正确的情况下，返回用户信息
         /// </summary>

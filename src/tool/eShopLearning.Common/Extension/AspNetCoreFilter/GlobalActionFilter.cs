@@ -81,7 +81,7 @@ namespace eShopLearning.Common.Extension.AspNetCoreFilter
             if (_doNotLogApis.Contains($"/{controllerName}/{actionName}") is false)
                 _log.LogInformation("" +
                    "【当前请求接口】：{apiPath} \r\n" +
-                   "【携带的参数有】： {args} \r\n", apiPath, JsonConvert.SerializeObject(context.ActionArguments));
+                   "【携带的参数有】： {args}", apiPath, JsonConvert.SerializeObject(context.ActionArguments));
             base.OnActionExecuting(context);
         }
 

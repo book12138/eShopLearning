@@ -36,7 +36,7 @@ namespace eShopLearning.Users.Controllers
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost("Register")]
-        public async Task<ResponseModel> Register([FromBody] UserAddDto dto)
+        public async Task<ResponseModel<string>> Register([FromBody] UserAddDto dto)
             => await _userService.UserAdd(dto);
 
         /// <summary>
