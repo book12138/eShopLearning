@@ -12,10 +12,11 @@
             <div>
                 <p class="mb-1">Start managing your</p>
                 <h4 class="mb-5 text-white">money with us!</h4>
-            </div> <a class="btn btn-primary btn-lg" asp-controller="Account" asp-action="Login"><small>Already signed up?</small><span>&nbsp;Log in</span> </a>
+            </div> <a class="btn btn-primary btn-lg" asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]"><small>Already signed up?</small><span>&nbsp;Log in</span> </a>
         </div>
         <div class="card two bg-white px-5 py-4 mb-3">
             <form asp-action="Register">
+                <input type="hidden" asp-for="ReturnUrl" />
                 <div class="form-group">
                     <input asp-for="Username" class="form-control" >
                     <label asp-for="Username" class="form-control-placeholder">Username</label>

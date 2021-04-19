@@ -27,7 +27,7 @@ namespace eShopLearning.MobileAuthServer.Certificate
              *  real environment the certificate should be created and stored in a secure way, which is out
              *  of the scope of this project.
              **********************************************************************************************/
-            using (var stream = assembly.GetManifestResourceStream("eShopLearning.IdentityAuth.Certificate.id4test.pfx"))
+            using (var stream = assembly.GetManifestResourceStream("eShopLearning.MobileAuthServer.Certificate.id4test.pfx"))
             {
                 return new X509Certificate2(ReadStream(stream), "123456"); // 123456 指的是密码
             }

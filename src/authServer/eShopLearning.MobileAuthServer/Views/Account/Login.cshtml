@@ -12,10 +12,14 @@
             <div>
                 <p class="mb-1">Start managing your</p>
                 <h4 class="mb-5 text-white">money with us!</h4>
-            </div> <a class="btn btn-primary btn-lg" asp-controller="Account" asp-action="Register"><small>You don't have an account?</small><span>&nbsp;signed up</span> </a>
+            </div> 
+            <a class="btn btn-primary btn-lg" asp-controller="Account" asp-action="Register" asp-route-returnurl="@Model.ReturnUrl">
+                <small>You don't have an account?</small><span>&nbsp;signed up</span> 
+            </a>
         </div>
         <div class="card two bg-white px-5 py-4 mb-3">
             <form asp-action="Login">
+                <input type="hidden" asp-for="ReturnUrl" />
                 <div class="form-group">
                     <input asp-for="Username" class="form-control" >
                     <label asp-for="Username" class="form-control-placeholder">Username</label>
@@ -29,6 +33,7 @@
                 <button type="submit" class="btn btn-primary btn-block btn-lg mt-1 mb-2">
                     <span>Get started<i class="fas fa-long-arrow-alt-right ml-2"></i></span>
                 </button>
+                <div asp-validation-summary="All" class="text-danger"></div>
             </form>
         </div>
     </div>

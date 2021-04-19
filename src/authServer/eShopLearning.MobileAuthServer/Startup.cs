@@ -1,7 +1,10 @@
+using Consul;
 using eShopLearning.MobileAuthServer.Certificate;
+using eShopLearning.MobileAuthServer.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,7 +46,7 @@ namespace eShopLearning.MobileAuthServer
                     //修改时间的序列化方式
                     options.SerializerSettings.Converters.Add(new IsoDateTimeConverter() { DateTimeFormat = "yyyy/MM/dd HH:mm:ss" });
                 }
- );
+            );
             #endregion
 
             #region identity server 4
@@ -74,6 +77,8 @@ namespace eShopLearning.MobileAuthServer
                 });
             });
             #endregion
+
+            services.AddScoped<IConsulClient, ConsulClient>(u => new ConsulClient(a => a.Address = new Uri(Configuration["ConsulAddress"])));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
