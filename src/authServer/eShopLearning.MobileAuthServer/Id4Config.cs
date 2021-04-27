@@ -182,6 +182,14 @@ namespace eShopLearning.MobileAuthServer
                     PostLogoutRedirectUris = { $"{clientUrls["cartproductaggswaggerui"]}/swagger/" },
                     AllowedScopes = { "cartproductaggapi", "cartapi" }
                 },
+                new Client
+                {
+                    ClientId = "jdcrawler",
+                    ClientName = "JD Crawler",
+                    ClientSecrets = { new Secret("HUxihsajbhjK&*tsxyiauuy8o78y7UXA*s7x8jabsja".Sha256()) },
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    AllowedScopes = { "productapi" }
+                }
             };
         }
     }

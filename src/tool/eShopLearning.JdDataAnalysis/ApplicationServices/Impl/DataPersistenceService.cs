@@ -1,4 +1,6 @@
 ﻿using eShopLearning.JdDataAnalysis.Dto;
+using IdentityModel.Client;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -18,14 +20,20 @@ namespace eShopLearning.JdDataAnalysis.ApplicationServices.Impl
         /// 日志
         /// </summary>
         private readonly ILogger _logger;
+        /// <summary>
+        /// 系统配置读取
+        /// </summary>
+        private readonly IConfiguration _configuration;
 
         /// <summary>
         /// 构造注入
         /// </summary>
         /// <param name="logger"></param>
-        public DataPersistenceService(ILogger<DataPersistenceService> logger)
+        /// <param name="configuration"></param>
+        public DataPersistenceService(ILogger<DataPersistenceService> logger, IConfiguration configuration)
         {
             _logger = logger;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -36,11 +44,19 @@ namespace eShopLearning.JdDataAnalysis.ApplicationServices.Impl
         /// <returns></returns>
         public async Task<bool> BatchSaveSkuData(IEnumerable<JdSkuDto> jdSkuDtos, string category)
         {
+            var tokenResponse = await GetToken();
+            if(tokenResponse is null)
+            {
+                _logger.LogError("获取 token 失败");
+                return false;
+            }
+
             using (HttpClient httpClient = new HttpClient())
             {
+                httpClient.SetBearerToken(tokenResponse.AccessToken); // httpclient设置好token
                 var encodedContent = new StringContent(JsonConvert.SerializeObject(new { Category = category, Skus = jdSkuDtos }));
                 encodedContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                var response = await httpClient.PostAsync("http://localhost:7648/api/Product/AddProduct", encodedContent);
+                var response = await httpClient.PostAsync(_configuration["EShopApiGateWayUrl"].Trim('/') + "/v1/WapApiGateway/Product/AddProduct", encodedContent);
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
                     _logger.LogError("添加商品失败");
@@ -67,5 +83,18 @@ namespace eShopLearning.JdDataAnalysis.ApplicationServices.Impl
                 return true;
             }
         }
+
+        /// <summary>
+        /// 获取 token
+        /// </summary>
+        /// <returns></returns>
+        private async Task<TokenResponse> GetToken()
+            => await new HttpClient().RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+            {
+                Address = _configuration["IdentityAuthServer:Address"].Trim('/') + "/connect/token",
+                ClientId = _configuration["IdentityAuthServer:ClientId"],
+                ClientSecret = _configuration["IdentityAuthServer:ClientSecret"],
+                Scope = _configuration["IdentityAuthServer:Scope"]
+            });
     }
 }

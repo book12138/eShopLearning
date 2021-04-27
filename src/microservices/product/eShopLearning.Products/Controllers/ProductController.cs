@@ -41,6 +41,10 @@ namespace eShopLearning.Products.Controllers
         /// 领域通知
         /// </summary>
         private readonly DomainNotificationHandler _domainNotification;
+        /// <summary>
+        /// 日志
+        /// </summary>
+        private readonly ILogger _logger;
 
         /// <summary>
         /// 构造注入
@@ -55,7 +59,8 @@ namespace eShopLearning.Products.Controllers
             IConnectionFactory rabbitmqConnFactory, 
             ISkuEsService skuEsService,
             IApplicationBus applicationBus,
-            INotificationHandler<DomainNotification> domainNotification
+            INotificationHandler<DomainNotification> domainNotification,
+            ILogger<ProductController> logger
             )
         {
             _productService = productService;
@@ -63,6 +68,7 @@ namespace eShopLearning.Products.Controllers
             _skuEsService = skuEsService;
             _applicationBus = applicationBus;
             _domainNotification = domainNotification as DomainNotificationHandler;
+            _logger = logger;
         }
 
         /// <summary>
@@ -71,8 +77,11 @@ namespace eShopLearning.Products.Controllers
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost("AddProduct")]
+        [Authorize]
         public async Task<ResponseModel> AddProduct([FromBody] AddProductDto dto)
         {
+            _logger.LogInformation("你成功的请求了进来");
+            return null;
             await _applicationBus.SendCommand(new AddProductCommand(dto.Category, dto.Skus));
             if (this._domainNotification.HasNotifications())
                 return ResponseModel.BuildResponse(PublicStatusCode.Fail, 

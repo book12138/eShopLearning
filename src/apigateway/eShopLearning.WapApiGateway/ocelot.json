@@ -9,7 +9,7 @@
       "LoadBalancerOptions": {
         "Type": "LeastConnection"
       },
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [ "Get", "POST", "OPTIONS", "PUT", "DELETE" ]
     }
   ],
   "GlobalConfiguration": {
