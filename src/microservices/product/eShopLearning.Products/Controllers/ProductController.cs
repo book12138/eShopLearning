@@ -80,8 +80,6 @@ namespace eShopLearning.Products.Controllers
         [Authorize]
         public async Task<ResponseModel> AddProduct([FromBody] AddProductDto dto)
         {
-            _logger.LogInformation("你成功的请求了进来");
-            return null;
             await _applicationBus.SendCommand(new AddProductCommand(dto.Category, dto.Skus));
             if (this._domainNotification.HasNotifications())
                 return ResponseModel.BuildResponse(PublicStatusCode.Fail, 
