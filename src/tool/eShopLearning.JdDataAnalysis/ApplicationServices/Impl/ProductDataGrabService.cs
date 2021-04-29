@@ -2,6 +2,7 @@
 using AngleSharp.Html.Parser;
 using eShopLearning.JdDataAnalysis.Dto;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -90,11 +91,11 @@ namespace eShopLearning.JdDataAnalysis.ApplicationServices.Impl
                 {
                     _logger.LogInformation($"开始顺着SKU为 {item} 的商品进行顺藤摸瓜，抄他家底");
                     jdSkuDtos.Clear();
-                    (JdSkuDto JdSkuDto, HashSet<string> adjoinSkuIds) = await GrabDataFromDetailPage(item);
+                    (List<JdSkuDto> JdSkuDtos, HashSet<string> adjoinSkuIds) = await GrabDataFromDetailPage(item);
 
-                    if (JdSkuDto is null) // 这一轮失败
+                    if (JdSkuDtos is null) // 这一轮失败
                         continue;
-                    jdSkuDtos.Add(JdSkuDto);
+                    jdSkuDtos.AddRange(JdSkuDtos);
 
                     if (adjoinSkuIds == null) // 下一步，存储数据
                     {
@@ -109,10 +110,10 @@ namespace eShopLearning.JdDataAnalysis.ApplicationServices.Impl
 
                     foreach (var skuIdItem in adjoinSkuIds) // 循环获取与此 sku 相关的其他sku数据
                     {
-                        (JdSkuDto JdSkuDtoTemp, HashSet<string> adjoinSkuIdsTemp) = await GrabDataFromDetailPage(skuIdItem, false);
-                        if (JdSkuDtoTemp == null)
+                        (List< JdSkuDto> JdSkuDtoTemps, HashSet<string> adjoinSkuIdsTemp) = await GrabDataFromDetailPage(skuIdItem, false);
+                        if (JdSkuDtoTemps == null)
                             continue;
-                        jdSkuDtos.Add(JdSkuDtoTemp);
+                        jdSkuDtos.AddRange(JdSkuDtoTemps);
                     }
 
                     // 存储查找出来的数据
@@ -131,7 +132,7 @@ namespace eShopLearning.JdDataAnalysis.ApplicationServices.Impl
         /// <param name="skuId">爬取的目标sku</param>
         /// <param name="returnOtherSkuIds">是否返回相邻的sku id集合</param>
         /// <returns></returns>
-        protected async Task<(JdSkuDto JdSkuDto, HashSet<string> adjoinSkuIds)> GrabDataFromDetailPage(string skuId, bool returnAdjoinSkuIds = true)
+        protected async Task<(List<JdSkuDto> JdSkuDtos, HashSet<string> adjoinSkuIds)> GrabDataFromDetailPage(string skuId, bool returnAdjoinSkuIds = true)
         {
             Thread.Sleep(500);
             JdSkuDto jdSkuDto = new JdSkuDto();
@@ -239,18 +240,15 @@ namespace eShopLearning.JdDataAnalysis.ApplicationServices.Impl
             jdSkuDto.DetailContent = new List<string>();
 
 
-            // 获取属性
+            // 获取第一排当前选中的属性
             jdSkuDto.SkuAttrs = new List<JdSkuDto.JdSkuAttrDto>();
             int attrIndex = 0;
             IElement attrContainer = null;
             IElement elementTemp = null;
             JdSkuDto.JdSkuAttrDto jdSkuAttrDto = null;
-            while (attrIndex++ < 10)
+            attrContainer = detailPageParse.QuerySelector($"#choose-attr-1");
+            if (attrContainer is not null)
             {
-                attrContainer = detailPageParse.QuerySelector($"#choose-attr-{attrIndex}");
-                if (attrContainer == null)
-                    break;
-
                 jdSkuAttrDto = new JdSkuDto.JdSkuAttrDto();
                 // 获取属性类型
                 jdSkuAttrDto.Type = attrContainer.GetAttribute("data-type")?.Trim();
@@ -260,7 +258,7 @@ namespace eShopLearning.JdDataAnalysis.ApplicationServices.Impl
                 {
                     _logger.LogError("出现异常，此属性集合，没有被选中元素，严重不符合逻辑");
                     _logger.LogInformation("出现逻辑错误，跳过此次查找，继续找下一属性");
-                    continue;
+                    return (null, null);
                 }
 
                 // 获取属性图片
@@ -277,7 +275,7 @@ namespace eShopLearning.JdDataAnalysis.ApplicationServices.Impl
                 }
 
                 // 获取属性文本
-                jdSkuAttrDto.Name = elementTemp.QuerySelector("i")?.TextContent?.Trim();
+                jdSkuAttrDto.Name = elementTemp.GetAttribute("data-value")?.Trim();
                 if (string.IsNullOrEmpty(jdSkuAttrDto.Name))
                 {
                     _logger.LogWarning($"查找SKU的第 {attrIndex} 个属性过程中，发现此属性没有文本");
@@ -308,10 +306,96 @@ namespace eShopLearning.JdDataAnalysis.ApplicationServices.Impl
                     }
                 }
             }
+            
+            List<List<JdSkuDto.JdSkuAttrDto>> jdSkuAttrs = null;
+            /* 捕捉第二排起（包括第二排）的所有 sku 属性 */
+            for (int i = 2; i < 10; i++)
+            {
+                attrContainer = detailPageParse.QuerySelector($"#choose-attr-{i}");
+                if (attrContainer is null)
+                    break;
 
-            Random random = new Random();
-            jdSkuDto.Inventory = random.Next(10, 1000);
-            return (jdSkuDto, adjoinSkuIds);
+                if (jdSkuAttrs is null) jdSkuAttrs = new List<List<JdSkuDto.JdSkuAttrDto>>();
+
+                var items = attrContainer.QuerySelectorAll("div > .item");
+                if (items == null)
+                {
+                    _logger.LogError($"在针对Sku id 为 {skuId} 的详情页面进行抓取第二排起的SKU属性数据时，发现其没有属性 item 这个css class");
+
+                    continue;
+                }
+
+                if (items.Length is 0) continue;
+
+                var temp = new List<JdSkuDto.JdSkuAttrDto>();
+                foreach (var item in items) // 单排属性遍历
+                {
+                    var skuAttr = new JdSkuDto.JdSkuAttrDto();
+                    skuAttr.Name = item.GetAttribute("data-value")?.Trim(); // 获取属性文字
+                    skuAttr.Image = elementTemp.QuerySelector("img")?.GetAttribute("src")?.Trim(); // 获取图片
+
+                    if (string.IsNullOrEmpty(skuAttr.Name))
+                    {
+                        _logger.LogWarning($"查找SKU的第 {i} 排属性过程中，发现此属性没有文本");
+                        skuAttr.Name = "";
+                    }
+
+                    if (string.IsNullOrEmpty(skuAttr.Image))
+                    {
+                        _logger.LogWarning($"查找SKU的第 {i} 排属性过程中，发现此属性没有图片");
+                        skuAttr.Image = "";
+                    }
+
+                    temp.Add(skuAttr);
+                }
+
+                jdSkuAttrs.Add(temp);
+            }
+            _logger.LogInformation("除去第一排属性之外，共抓取到{count}排属性", jdSkuAttrs?.Count ?? 0);
+
+            /* 按照属性，递归生成sku */
+            List<JdSkuDto> jdSkuDtos = new List<JdSkuDto>();
+            jdSkuDto.Title = jdSkuDto?.Title?.Trim().Split(' ').FirstOrDefault() ?? "";
+            GenerateJdSku(JsonConvert.SerializeObject(jdSkuDto), jdSkuDtos, jdSkuAttrs, new List<JdSkuDto.JdSkuAttrDto>() { jdSkuAttrDto });
+            return (jdSkuDtos, adjoinSkuIds);
+        }
+
+        /// <summary>
+        /// 生成sku
+        /// </summary>
+        /// <param name="skuTempplate">sku模板JSON字符串</param>
+        /// <param name="jdSkuDtos">最终存放sku的list</param>
+        /// <param name="jdSkuAttrDtos">二维的sku属性集</param>
+        /// <param name="skuAttrList">每一次递归都会往这个list填充属性数据，在最终的一次递归中，会赋值到sku dto的字段中</param>
+        /// <param name="lineCount">当前递归是要循环遍历jdSkuAttrDtos中的第几层sku属性</param>
+        /// <returns></returns>
+        private void GenerateJdSku(string skuTemplate, List<JdSkuDto> jdSkuDtos, List<List<JdSkuDto.JdSkuAttrDto>> jdSkuAttrDtos, List<JdSkuDto.JdSkuAttrDto> skuAttrList, int lineCount = 0)
+        {
+            if (jdSkuAttrDtos[lineCount] is null || jdSkuAttrDtos[lineCount].Any() is false)
+                return;
+
+            var isEndLine = lineCount + 1 >= jdSkuAttrDtos.Count;
+            foreach (var item in jdSkuAttrDtos[lineCount])
+            {
+                skuAttrList.Add(item);
+
+                if (isEndLine is false)
+                {
+                    GenerateJdSku(skuTemplate, jdSkuDtos, jdSkuAttrDtos, skuAttrList, lineCount + 1);
+                }
+                else
+                {
+                    var dto = JsonConvert.DeserializeObject<JdSkuDto>(skuTemplate);
+                    dto.SkuAttrs = skuAttrList;
+                    Random random = new Random();
+                    dto.Inventory = random.Next(10, 1000);
+                    var titleSuffix = string.Join(' ', skuAttrList.Where(u => u.Name is not null or "").Select(u => u.Name));
+                    dto.Title += " " + titleSuffix;
+
+                    jdSkuDtos.Add(dto);                    
+                }
+                skuAttrList.RemoveAt(skuAttrList.Count - 1); // 删掉最后一个
+            }            
         }
 
         /// <summary>
