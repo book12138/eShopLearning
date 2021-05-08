@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using eShopLearning.Products.ViewModel;
 
 namespace eShopLearning.Products.ApplicationServices
 {
@@ -17,5 +18,11 @@ namespace eShopLearning.Products.ApplicationServices
         /// <param name="skuDtos"></param>
         /// <returns></returns>
         Task<(bool isSuccess, string errorMag, IEnumerable<Sku> skus)> AddProduct(string category, IEnumerable<SkuDto> skuDtos);
+        /// <summary>
+        /// 获取SKU详情
+        /// </summary>
+        /// <param name="skuId"></param>
+        /// <returns></returns>
+        Task<ResponseModel<ProductDetailsViewModel>> GetProductDetail(string skuId);
     }
 }

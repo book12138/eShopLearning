@@ -14,6 +14,7 @@ using eShopLearning.Products.Domain.Bus;
 using eShopLearning.Products.Domain.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using eShopLearning.Products.ViewModel;
 
 namespace eShopLearning.Products.Controllers
 {
@@ -116,5 +117,14 @@ namespace eShopLearning.Products.Controllers
             await _skuEsService.SaveAllSkuDataToEsFromDb();
             return Ok();
         }
+
+        /// <summary>
+        /// 获取商品详情
+        /// </summary>
+        /// <param name="skuId"></param>
+        /// <returns></returns>
+        [HttpGet("GetProductDetails/{skuId}")]
+        public async Task<ResponseModel<ProductDetailsViewModel>> GetProductDetails(string skuId)
+            => await _productService.GetProductDetail(skuId);
     }
 }

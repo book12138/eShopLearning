@@ -3,6 +3,7 @@ using eShopLearning.Products.Dto;
 using eShopLearning.Products.EFCoreRepositories.Entities;
 using eShopLearning.Products.ApplicationGrpcRemoteServices.Protos;
 using System.Linq;
+using eShopLearning.Products.ViewModel;
 
 namespace eShopLearning.Products.AutoMapper
 {
@@ -25,6 +26,10 @@ namespace eShopLearning.Products.AutoMapper
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(src => float.Parse(src.Price.ToString())));
             CreateMap<Sku, GetSkuBasikInfoAsIdReply>()
                 .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.RotatePictures.IndexOf(',') < 0 ? src.RotatePictures : src.RotatePictures.Substring(0, src.RotatePictures.IndexOf(','))));
+            CreateMap<Sku, ProductDetailsViewModel>()
+                .ForMember(dest => dest.RotatePictures, opt => opt.MapFrom(src => SplitStrAsComma(src.RotatePictures)))
+                .ForMember(dest => dest.DetailContent, opt => opt.MapFrom(src => SplitStrAsComma(src.DetailContent)));
+            CreateMap<SkuAttr, ProductDetailsViewModel.AttrSkuGroup.AttrSku>();
         }
 
         /// <summary>
