@@ -317,6 +317,9 @@ namespace eShopLearning.JdDataAnalysis.ApplicationServices.Impl
 
                 if (jdSkuAttrs is null) jdSkuAttrs = new List<List<JdSkuDto.JdSkuAttrDto>>();
 
+                // 获取属性类型
+                var attrType = attrContainer.GetAttribute("data-type")?.Trim();
+
                 var items = attrContainer.QuerySelectorAll("div > .item");
                 if (items == null)
                 {
@@ -332,7 +335,8 @@ namespace eShopLearning.JdDataAnalysis.ApplicationServices.Impl
                 {
                     var skuAttr = new JdSkuDto.JdSkuAttrDto();
                     skuAttr.Name = item.GetAttribute("data-value")?.Trim(); // 获取属性文字
-                    skuAttr.Image = elementTemp.QuerySelector("img")?.GetAttribute("src")?.Trim(); // 获取图片
+                    skuAttr.Image = item.QuerySelector("img")?.GetAttribute("src")?.Trim(); // 获取图片
+                    skuAttr.Type = attrType;
 
                     if (string.IsNullOrEmpty(skuAttr.Name))
                     {
@@ -344,6 +348,11 @@ namespace eShopLearning.JdDataAnalysis.ApplicationServices.Impl
                     {
                         _logger.LogWarning($"查找SKU的第 {i} 排属性过程中，发现此属性没有图片");
                         skuAttr.Image = "";
+                    }
+                    else
+                    {
+                        if (skuAttr.Image.Length > 2 && skuAttr.Image.Substring(0, 2) == "//")
+                            skuAttr.Image = "https:" + skuAttr.Image;
                     }
 
                     temp.Add(skuAttr);
@@ -386,10 +395,10 @@ namespace eShopLearning.JdDataAnalysis.ApplicationServices.Impl
                 else
                 {
                     var dto = JsonConvert.DeserializeObject<JdSkuDto>(skuTemplate);
-                    dto.SkuAttrs = skuAttrList;
+                    dto.SkuAttrs = JsonConvert.DeserializeObject<List<JdSkuDto.JdSkuAttrDto>>(JsonConvert.SerializeObject(skuAttrList));
                     Random random = new Random();
                     dto.Inventory = random.Next(10, 1000);
-                    var titleSuffix = string.Join(' ', skuAttrList.Where(u => u.Name is not null or "").Select(u => u.Name));
+                    var titleSuffix = string.Join(' ', skuAttrList.Where(u => u?.Name is not null or "").Select(u => u.Name));
                     dto.Title += " " + titleSuffix;
 
                     jdSkuDtos.Add(dto);                    

@@ -63,8 +63,9 @@ namespace eShopLearning.Products.ApplicationServices.Impl
                 return;
             }    
             foreach (var item in skus)
-            {
+            {                
                 var esSkuDto = _mapper.Map<EsSkuDto>(item);
+                _logger.LogInformation("准备持久化一条sku数据到 es 中，该Sku的id为{id}", esSkuDto.SkuId);
                 await _elasticClient.IndexAsync(esSkuDto, u => u.Index("eshopjdskudata").Id(esSkuDto.SkuId));
             }
         }
@@ -83,6 +84,7 @@ namespace eShopLearning.Products.ApplicationServices.Impl
             }
 
             var esSkuDto = _mapper.Map<EsSkuDto>(sku);
+            _logger.LogInformation("准备持久化一条sku数据到 es 中，该Sku的id为{id}", esSkuDto.SkuId);
             await _elasticClient.IndexAsync(esSkuDto, u => u.Index("eshopjdskudata").Id(esSkuDto.SkuId));
         }
 
