@@ -12,6 +12,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using eShopLearning.Products.ViewModel;
+using eShopLearning.Common.Extension.LinqExtensions;
+using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
 namespace eShopLearning.Products.ApplicationServices.Impl
 {
@@ -41,6 +44,10 @@ namespace eShopLearning.Products.ApplicationServices.Impl
         /// es 数据服务
         /// </summary>
         private readonly ISkuEsService _skuEsService;
+        /// <summary>
+        /// 日志
+        /// </summary>
+        private readonly ILogger _logger;
 
         /// <summary>
         /// 构造注入
@@ -50,14 +57,17 @@ namespace eShopLearning.Products.ApplicationServices.Impl
         /// <param name="skuAttrRepository"></param>
         /// <param name="mapper"></param>
         /// <param name="miniShopSkuContext"></param>
+        /// <param name="eShopProductDbContext"></param>
         /// <param name="skuEsService"></param>
+        /// <param name="logger"></param>
         public ProductService(
             ISkuRepository skuRepository,
             ISpuRepository spuRepository,
             ISkuAttrRepository skuAttrRepository,
             IMapper mapper,
             eShopProductDbContext @eShopProductDbContext,
-            ISkuEsService skuEsService
+            ISkuEsService skuEsService,
+            ILogger<ProductService> logger
             )
         {
             _skuRepository = skuRepository;
@@ -66,6 +76,7 @@ namespace eShopLearning.Products.ApplicationServices.Impl
             _skuEsService = skuEsService;
             _mapper = mapper;
             _eShopProductDbContext = eShopProductDbContext;
+            _logger = logger;
         }
 
         /// <summary>
@@ -130,6 +141,7 @@ namespace eShopLearning.Products.ApplicationServices.Impl
             var targetSkuAttrs = await _eShopProductDbContext.SkuAttrs.Where(u => u.Status && u.SkuId == skuId).ToListAsync(); // 找出该sku的所有属性
             if(targetSkuAttrs is null || targetSkuAttrs.Any() is false)
                 return ResponseModel<ProductDetailsViewModel>.BuildResponse(PublicStatusCode.Success, result);
+            targetSkuAttrs = targetSkuAttrs.OrderBy(u => u.SkuId).ToList();
 
             result.AttrSkuGroups = new List<ProductDetailsViewModel.AttrSkuGroup>(); // 初始化属性，准备用来存储数据
 
@@ -141,22 +153,55 @@ namespace eShopLearning.Products.ApplicationServices.Impl
             // 遍历该 sku 的每一种类型的属性，然后，找出其他属性类型都相同，但是当前类型里不同属性值的sku，相互之间组合成一个sku组
             for (int i = 0; i < targetSkuAttrs.Count(); i++)
             {
-                List<SkuAttr> temp = skuAttrList;
+                List<SkuAttr> temp = JsonConvert.DeserializeObject<List<SkuAttr>>(JsonConvert.SerializeObject(skuAttrList));
+
+                // 同组中，保留不同，去掉相同
+                // _logger.LogInformation("准备去掉同组属性中，同属性值，但是 不是 需要查询的那个sku");
+                // _logger.LogInformation("待处理数据共有{count}条", temp.Count);
+                for (int c = temp.Count - 1; c >= 0; c--)
+                {
+                    var hasRemoveSkuFromSkuAttrList = "";
+                    if (
+                        temp[c].SkuId == hasRemoveSkuFromSkuAttrList
+                            ||
+                        (temp[c].Type == targetSkuAttrs[i].Type && temp[c].Name == targetSkuAttrs[i].Name && temp[c].SkuId != skuId)
+                        )
+                    {
+                        hasRemoveSkuFromSkuAttrList = temp[c].SkuId;
+                        temp.RemoveAt(c);
+                    }
+                }
+                // _logger.LogInformation("处理完成后，剩余sku属性记录还有{count}条", temp.Count);
+
                 for (int j = 0; j < targetSkuAttrs.Count(); j++)
                 {
                     if (i == j)
                         continue;
 
-                    // 每一种类型分组中（除去当前类型），只保留属性值相同的SKU
+                    // 遍历除当前上一层循环体当前所指向的分组，对其他所有分组，都剔除掉和查询目标sku属性值所不同的sku
+                    _logger.LogInformation("准备去掉其他组属性中，与查询目标sku属性值不同的sku");
+                    _logger.LogInformation("待处理数据共有{count}条", temp.Count);
+                    _logger.LogInformation("删除属性值不为{name}的sku", targetSkuAttrs[j].Name);
+                    var hasRemoveSkuFromSkuAttrList = "";
                     for (int c = temp.Count - 1; c >= 0; c--)
-                        if (temp[c].Type == targetSkuAttrs[j].Type && temp[c].Name == targetSkuAttrs[j].Name)
+                        if (
+                            temp[c].SkuId == hasRemoveSkuFromSkuAttrList 
+                            || 
+                            (temp[c].Type == targetSkuAttrs[j].Type && temp[c].Name != targetSkuAttrs[j].Name)
+                            )
+                        {
+                            hasRemoveSkuFromSkuAttrList = temp[c].SkuId;
                             temp.RemoveAt(c);
+                        }
+                    _logger.LogInformation("处理完成后，剩余sku属性记录还有{count}条", temp.Count);
                 }
 
+                _logger.LogInformation("该组属性中，筛选出来的结果是{result}", temp.Where(u => u.Type == targetSkuAttrs[i].Type).Select(u => u.Name));
+                _logger.LogInformation("该组属性中，另一组属性的结果是{result}", temp.Where(u => u.Type == targetSkuAttrs[1 - i].Type).Select(u => u.Name));
                 result.AttrSkuGroups.Add(new ProductDetailsViewModel.AttrSkuGroup
                 {
                     Name = targetSkuAttrs[i].Type,
-                    AttrSkus = _mapper.Map<IEnumerable<ProductDetailsViewModel.AttrSkuGroup.AttrSku>>(temp.Where(u => u.Type == targetSkuAttrs[i].Type))
+                    AttrSkus = _mapper.Map<IEnumerable<ProductDetailsViewModel.AttrSkuGroup.AttrSku>>(temp.Where(u => u.Type == targetSkuAttrs[i].Type).Distinct(u => u.Name))
                 });
             }
 

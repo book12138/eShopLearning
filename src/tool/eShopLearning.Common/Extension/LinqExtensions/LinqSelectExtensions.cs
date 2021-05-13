@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace eShopLearning.Common.Extension
+namespace eShopLearning.Common.Extension.LinqExtensions
 {
     public static class LinqSelectExtensions
     {
