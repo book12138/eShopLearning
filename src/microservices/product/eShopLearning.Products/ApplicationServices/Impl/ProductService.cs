@@ -15,6 +15,7 @@ using eShopLearning.Products.ViewModel;
 using eShopLearning.Common.Extension.LinqExtensions;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
+using eShopLearning.Products.ApplicationServices.QueryServices;
 
 namespace eShopLearning.Products.ApplicationServices.Impl
 {
@@ -48,6 +49,10 @@ namespace eShopLearning.Products.ApplicationServices.Impl
         /// 日志
         /// </summary>
         private readonly ILogger _logger;
+        /// <summary>
+        /// 商品查询服务
+        /// </summary>
+        private readonly IProductQueryService _productQueryService;
 
         /// <summary>
         /// 构造注入
@@ -60,6 +65,7 @@ namespace eShopLearning.Products.ApplicationServices.Impl
         /// <param name="eShopProductDbContext"></param>
         /// <param name="skuEsService"></param>
         /// <param name="logger"></param>
+        /// <param name="productQueryService"></param>
         public ProductService(
             ISkuRepository skuRepository,
             ISpuRepository spuRepository,
@@ -67,7 +73,8 @@ namespace eShopLearning.Products.ApplicationServices.Impl
             IMapper mapper,
             eShopProductDbContext @eShopProductDbContext,
             ISkuEsService skuEsService,
-            ILogger<ProductService> logger
+            ILogger<ProductService> logger,
+            IProductQueryService productQueryService
             )
         {
             _skuRepository = skuRepository;
@@ -77,6 +84,7 @@ namespace eShopLearning.Products.ApplicationServices.Impl
             _mapper = mapper;
             _eShopProductDbContext = eShopProductDbContext;
             _logger = logger;
+            _productQueryService = productQueryService;
         }
 
         /// <summary>
@@ -94,7 +102,7 @@ namespace eShopLearning.Products.ApplicationServices.Impl
                 return (false, "没有实际的SKU数据", null);
 
             foreach (var item in skuDtos.Select(u => u.Title))
-                if (await _eShopProductDbContext.Skus.AnyAsync(u => u.Title.Trim() == item))
+                if (await _productQueryService.ExistSku(item.Trim())) //await _eShopProductDbContext.Skus.AnyAsync(u => u.Title.Trim() == item)
                     return (false, "该商品已经有过记录", null);
 
             var spuId = SnowFlakeAlg.GetGuid().ToString(); //_snowflakeIdGenerate.NextId().ToString();
@@ -133,12 +141,14 @@ namespace eShopLearning.Products.ApplicationServices.Impl
             if (skuId is null or "")
                 return ResponseModel<ProductDetailsViewModel>.BuildResponse(PublicStatusCode.Fail, "sku id 不可为空");
 
-            var skuModel = await _eShopProductDbContext.Skus.FirstOrDefaultAsync(u => u.Status && u.Id == skuId);
+            var skuModel = await _productQueryService.QuerySkuAsId(skuId);
+                // await _eShopProductDbContext.Skus.FirstOrDefaultAsync(u => u.Status && u.Id == skuId);
             if(skuModel is null)
                 return ResponseModel<ProductDetailsViewModel>.BuildResponse(PublicStatusCode.Fail, "此商品不存在或已下架");
 
             var result = _mapper.Map<ProductDetailsViewModel>(skuModel);
-            var targetSkuAttrs = await _eShopProductDbContext.SkuAttrs.Where(u => u.Status && u.SkuId == skuId).ToListAsync(); // 找出该sku的所有属性
+            var targetSkuAttrs = (await _productQueryService.QuerySkuAttrsAsSkuId(skuId)).ToList();
+                // await _eShopProductDbContext.SkuAttrs.Where(u => u.Status && u.SkuId == skuId).ToListAsync(); // 找出该sku的所有属性
             if(targetSkuAttrs is null || targetSkuAttrs.Any() is false)
                 return ResponseModel<ProductDetailsViewModel>.BuildResponse(PublicStatusCode.Success, result);
             targetSkuAttrs = targetSkuAttrs.OrderBy(u => u.SkuId).ToList();
@@ -146,9 +156,10 @@ namespace eShopLearning.Products.ApplicationServices.Impl
             result.AttrSkuGroups = new List<ProductDetailsViewModel.AttrSkuGroup>(); // 初始化属性，准备用来存储数据
 
             // 一次性把该商品的所有同类sku的属性查出来
-            var skuAttrList = await (from s in _eShopProductDbContext.Skus.Where(u => u.Status && u.SpuId == skuModel.SpuId)
-                           join a in _eShopProductDbContext.SkuAttrs on s.Id equals a.SkuId
-                           select a).ToListAsync();
+            //var skuAttrList = await (from s in _eShopProductDbContext.Skus.Where(u => u.Status && u.SpuId == skuModel.SpuId)
+            //               join a in _eShopProductDbContext.SkuAttrs on s.Id equals a.SkuId
+            //               select a).ToListAsync();
+            var skuAttrList = await _productQueryService.QueryAllSkuAttrsAsSpuId(skuModel.SpuId);
 
             // 遍历该 sku 的每一种类型的属性，然后，找出其他属性类型都相同，但是当前类型里不同属性值的sku，相互之间组合成一个sku组
             for (int i = 0; i < targetSkuAttrs.Count(); i++)

@@ -30,6 +30,8 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using eShopLearning.Products.ApplicationServices.QueryServices;
+using eShopLearning.Products.ApplicationServices.QueryServices.Impl;
 
 namespace eShopLearning.Products
 {
@@ -196,6 +198,7 @@ namespace eShopLearning.Products
             #region application services 
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ISkuEsService, SkuEsService>();
+            services.AddScoped<IProductQueryService, ProductQueryService>();
             #endregion            
         }
 
