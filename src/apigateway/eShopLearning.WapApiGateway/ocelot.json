@@ -15,7 +15,7 @@
   "GlobalConfiguration": {
     "BaseUrl": "http://localhost:4865",
     "ServiceDiscoveryProvider": { // consul 
-      "Host": "localhost",
+      "Host": "shapman.cn",
       "Port": 8500
     }
   }

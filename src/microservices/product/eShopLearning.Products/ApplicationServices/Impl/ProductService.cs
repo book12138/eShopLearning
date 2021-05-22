@@ -42,10 +42,6 @@ namespace eShopLearning.Products.ApplicationServices.Impl
         /// </summary>
         private readonly eShopProductDbContext _eShopProductDbContext;
         /// <summary>
-        /// es 数据服务
-        /// </summary>
-        private readonly ISkuEsService _skuEsService;
-        /// <summary>
         /// 日志
         /// </summary>
         private readonly ILogger _logger;
@@ -63,7 +59,6 @@ namespace eShopLearning.Products.ApplicationServices.Impl
         /// <param name="mapper"></param>
         /// <param name="miniShopSkuContext"></param>
         /// <param name="eShopProductDbContext"></param>
-        /// <param name="skuEsService"></param>
         /// <param name="logger"></param>
         /// <param name="productQueryService"></param>
         public ProductService(
@@ -72,7 +67,6 @@ namespace eShopLearning.Products.ApplicationServices.Impl
             ISkuAttrRepository skuAttrRepository,
             IMapper mapper,
             eShopProductDbContext @eShopProductDbContext,
-            ISkuEsService skuEsService,
             ILogger<ProductService> logger,
             IProductQueryService productQueryService
             )
@@ -80,7 +74,6 @@ namespace eShopLearning.Products.ApplicationServices.Impl
             _skuRepository = skuRepository;
             _spuRepository = spuRepository;
             _skuAttrRepository = skuAttrRepository;
-            _skuEsService = skuEsService;
             _mapper = mapper;
             _eShopProductDbContext = eShopProductDbContext;
             _logger = logger;

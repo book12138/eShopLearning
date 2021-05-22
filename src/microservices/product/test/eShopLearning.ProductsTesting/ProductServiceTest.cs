@@ -2,6 +2,8 @@ using AutoFixture;
 using AutoMapper;
 using eShopLearning.Products.ApplicationServices;
 using eShopLearning.Products.ApplicationServices.Impl;
+using eShopLearning.Products.ApplicationServices.QueryServices;
+using eShopLearning.Products.ApplicationServices.QueryServices.Impl;
 using eShopLearning.Products.AutoMapper;
 using eShopLearning.Products.Dto;
 using eShopLearning.Products.EFCoreRepositories.EFCore;
@@ -11,6 +13,7 @@ using FluentAssertions;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -23,8 +26,7 @@ namespace eShopLearning.ProductsTesting
 {
     public class ProductServiceTest
     {
-        private readonly IProductService _productService;
-        private readonly eShopProductDbContext _eShopProductDbContext;
+        private readonly ServiceProvider serviceProvider;
 
         public ProductServiceTest()
         {
@@ -37,29 +39,47 @@ namespace eShopLearning.ProductsTesting
             services.AddTransient<ISpuRepository, SpuRepository>();
             services.AddTransient<ISkuAttrRepository, SkuAttrRepository>();
             services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<IProductQueryService, ProductQueryService>();
 
-            var elasticsearchServiceMock = new Mock<ISkuEsService>();
-
-            var serviceProvider = services.BuildServiceProvider();
-            var _skuRepository = serviceProvider.GetService<ISkuRepository>();
-            var _spuRepository = serviceProvider.GetService<ISpuRepository>();
-            var _skuAttrRepository = serviceProvider.GetService<ISkuAttrRepository>();
-            var _mapper = serviceProvider.GetService<IMapper>();
-            _eShopProductDbContext = serviceProvider.GetService<eShopProductDbContext>();
-            _productService = new ProductService(_skuRepository, _spuRepository, _skuAttrRepository, _mapper, _eShopProductDbContext, elasticsearchServiceMock.Object);
+            serviceProvider = services.BuildServiceProvider();            
         }
 
+        /// <summary>
+        /// 测试商品添加
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task AddProduct()
         {
+            #region 创建 productservice 对象
+            var skuRepository = serviceProvider.GetService<ISkuRepository>();
+            var spuRepository = serviceProvider.GetService<ISpuRepository>();
+            var skuAttrRepository = serviceProvider.GetService<ISkuAttrRepository>();
+            var mapper = serviceProvider.GetService<IMapper>();
+            var eShopProductDbContext = serviceProvider.GetService<eShopProductDbContext>();
+
+            var mockLogger = new Mock<ILogger<ProductService>>();
+            mockLogger.Setup(ml => ml.Log(It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<object>(), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()));
+            var logger = mockLogger.Object;
+
+            var mockProductQueryService = new Mock<IProductQueryService>();
+            mockProductQueryService.Setup(u => u.ExistSku("test")).Returns(Task.Run(() => false));
+            var productQueryService = mockProductQueryService.Object;
+
+            var _productService = new ProductService(skuRepository, spuRepository, skuAttrRepository, mapper, eShopProductDbContext, logger, productQueryService);
+            #endregion
+
             Fixture specimens = new Fixture();
-            var result = await _productService.AddProduct("123", new List<SkuDto> {
+            var dtos = new List<SkuDto> {
                 specimens.Create<SkuDto>(),
                 specimens.Create<SkuDto>(),
                 specimens.Create<SkuDto>()
-            });
+            };
+            dtos = dtos.Select(u => { u.Title = "test"; return u; }).ToList();
+
+            var result = await _productService.AddProduct("123", dtos);            
             result.isSuccess.Should().BeTrue();
-            _eShopProductDbContext.Skus.Count().Should().Be(3);
+            eShopProductDbContext.Skus.Count().Should().Be(3);
         }
     }
 }
