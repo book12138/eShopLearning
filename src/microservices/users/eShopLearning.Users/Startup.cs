@@ -105,9 +105,14 @@ namespace eShopLearning.Users
             #endregion            
 
             #region consul
+            /* 从 apollo 配置中心里获取 ip 及 端口 的配置 */
+            var webapiServiceEndpointIp = Configuration["WebApiEndPointIp"] ?? "localhost";
+            var webapiServiceEndpointPort = Convert.ToInt32(Configuration["WebApiEndPointPort"] ?? "1685");
+
+            /* 注册到consul中 */
             services.AddConsul(Configuration["ConsulAddress"])
-           .AddHttpHealthCheck("http://localhost:1685/api/Health/Check", 5, 10)
-           .RegisterService("microservice_users", "localhost", 1685, new string[0]);
+                .AddHttpHealthCheck($"http://{webapiServiceEndpointIp}:{webapiServiceEndpointPort}/api/Health/Check", 5, 10)
+                .RegisterService("microservice_users", webapiServiceEndpointIp, webapiServiceEndpointPort, new string[0]);
             #endregion
 
             #region authentication

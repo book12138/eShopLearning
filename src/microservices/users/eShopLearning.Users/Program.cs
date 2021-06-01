@@ -9,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System.IO;
 using eShopLearning.Common.Extension;
+using eShopLearning.Common.Extension.Configuration;
+using Com.Ctrip.Framework.Apollo;
 
 string _namespace = typeof(Startup).Namespace;
 string _appName = _namespace.Substring(_namespace.LastIndexOf('.', _namespace.LastIndexOf('.') - 1) + 1);
@@ -18,7 +20,11 @@ IConfiguration GetConfiguration()
     => (new ConfigurationBuilder()
         .SetBasePath(Directory.GetCurrentDirectory())
         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-        .AddEnvironmentVariables()).Build();
+        .TryAddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true) // 尝试把多环境配置文件一同加载进来
+        .TryAddJsonFile("appsettings.Staging.json", optional: false, reloadOnChange: true)
+        .TryAddJsonFile("appsettings.Production.json", optional: false, reloadOnChange: true)
+        .AddEnvironmentVariables())
+        .Build();
 #endregion
 
 #region 定义 serilog
@@ -38,7 +44,10 @@ Log.Logger = CreateSerilogLogger(configuration);
 IWebHost BuildWebHost(IConfiguration configuration, string[] args) =>
     WebHost.CreateDefaultBuilder(args)
         .CaptureStartupErrors(false)
-        .ConfigureAppConfiguration(x => x.AddConfiguration(configuration))
+           .ConfigureAppConfiguration(x => {
+               x.AddConfiguration(configuration);
+               x.AddApollo(configuration.GetSection("Apollo")).AddDefault(); // apollo config
+           })
         .UseStartup<Startup>()
         .UseContentRoot(Directory.GetCurrentDirectory())
         .UseSerilog()
