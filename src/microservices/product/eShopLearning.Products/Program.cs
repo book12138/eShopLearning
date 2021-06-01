@@ -21,7 +21,8 @@ IConfiguration GetConfiguration()
         .SetBasePath(Directory.GetCurrentDirectory())
         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)    
         .TryAddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true) // 尝试把多环境配置文件一同加载进来
-        .TryAddJsonFile("appsettings.Production.json", optional: false, reloadOnChange: true) // 尝试把多环境配置文件一同加载进来
+        .TryAddJsonFile("appsettings.Staging.json", optional: false, reloadOnChange: true) 
+        .TryAddJsonFile("appsettings.Production.json", optional: false, reloadOnChange: true) 
         .AddEnvironmentVariables())
         .Build();
 #endregion
