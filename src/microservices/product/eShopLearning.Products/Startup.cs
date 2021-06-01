@@ -123,12 +123,20 @@ namespace eShopLearning.Products
             services.AddGrpc(); // gRPC
 
             #region consul
+
+            /* 从 apollo 配置中心里获取 ip 及 端口 的配置 */
+            var webapiServiceEndpointIp = Configuration["WebApiEndPointIp"] ?? "localhost";
+            var webapiServiceEndpointPort = Convert.ToInt32(Configuration["WebApiEndPointPort"] ?? "7648");
+            var grpcServiceEndpointIp = Configuration["GrpcEndPointIp"] ?? "localhost";
+            var grpcServiceEndpointPort = Convert.ToInt32(Configuration["GrpcEndPointPort"] ?? "8685");
+
+            /* 注册到consul中 */
             services.AddConsul(Configuration["ConsulAddress"])
-                .AddHttpHealthCheck("http://localhost:7648/api/Health/Check", 5, 10)
-                .RegisterService("microservice_product", "localhost", 7648, new string[0]);
+                .AddHttpHealthCheck($"http://{webapiServiceEndpointIp}:{webapiServiceEndpointPort}/api/Health/Check", 5, 10)
+                .RegisterService("microservice_product", webapiServiceEndpointIp, webapiServiceEndpointPort, new string[0]);
             services.AddConsul(Configuration["ConsulAddress"])
-                .AddGRPCHealthCheck("localhost:8685")
-                .RegisterService("microservice_product_grpc", "localhost", 8685, new string[0]);
+                .AddGRPCHealthCheck($"{grpcServiceEndpointIp}:{grpcServiceEndpointPort}")
+                .RegisterService("microservice_product_grpc", grpcServiceEndpointIp, grpcServiceEndpointPort, new string[0]);
             #endregion
 
             #region swagger

@@ -10,6 +10,7 @@ using Serilog;
 using System.IO;
 using eShopLearning.Products.ApplicationServices;
 using Com.Ctrip.Framework.Apollo;
+using eShopLearning.Common.Extension.Configuration;
 
 string _namespace = typeof(Startup).Namespace;
 string _appName = _namespace.Substring(_namespace.LastIndexOf('.', _namespace.LastIndexOf('.') - 1) + 1);
@@ -18,8 +19,11 @@ string _appName = _namespace.Substring(_namespace.LastIndexOf('.', _namespace.La
 IConfiguration GetConfiguration()
     => (new ConfigurationBuilder()
         .SetBasePath(Directory.GetCurrentDirectory())
-        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-        .AddEnvironmentVariables()).Build();
+        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)    
+        .TryAddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true) // 尝试把多环境配置文件一同加载进来
+        .TryAddJsonFile("appsettings.Production.json", optional: false, reloadOnChange: true) // 尝试把多环境配置文件一同加载进来
+        .AddEnvironmentVariables())
+        .Build();
 #endregion
 
 #region 定义 serilog
